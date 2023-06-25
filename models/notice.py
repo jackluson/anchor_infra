@@ -35,14 +35,6 @@ class Notice(ORM_Base, Model):
     def __repr__(self):
         return f"notice(id={self.id!r}, code={self.title!r})"
 
-    def __init__(self, **kwargs):
-        self.id = idWorker.get_id()
-        ORM_Base.__init__(self, **kwargs)
-        Model.__init__(self, **kwargs, id=self.id)
-
-    def __repr__(self):
-        return f"EtfIndicator(id={self.id!r}, code={self.code!r}, name={self.name!r})"
-
 
 def create():
     table = ORM_Base.metadata.tables[Notice.__tablename__]
