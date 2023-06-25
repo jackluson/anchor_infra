@@ -22,6 +22,7 @@ class Notice(ORM_Base, Model):
     name = Column(String(24), nullable=False, comment='名称')
     code = Column(String(12), nullable=False, comment='代码')
     type = Column(String(12), nullable=False, comment='类型')
+    type_code = Column(String(24), nullable=False, comment='类型编码')
     target_time = Column(DateTime, nullable=False, comment='公告日期')
     publish_time = Column(DateTime, nullable=False, comment='公告日期')
     attach_url = Column(String(12), nullable=False, comment='附件链接')
@@ -44,7 +45,9 @@ class Notice(ORM_Base, Model):
 
 
 def create():
-    # Notice.__table__.drop(engine)
+    table = ORM_Base.metadata.tables[Notice.__tablename__]
+    if table is not None:
+        Notice.__table__.drop(engine)
     ORM_Base.metadata.create_all(engine)
     # mapper_registry.metadata.create_all(engine)
 
