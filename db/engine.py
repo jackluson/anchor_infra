@@ -13,7 +13,7 @@ sys.path.append(os.getcwd() + '/')
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import registry
-from config.env import env_db_host, env_db_name, env_db_user, env_db_password, env_db_port
+from ..config.env import env_db_host, env_db_name, env_db_user, env_db_password, env_db_port
 
 SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + env_db_user + ':'+ env_db_password +'@'+ env_db_host + ':' + env_db_port + '/' + env_db_name
 

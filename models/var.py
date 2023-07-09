@@ -10,8 +10,8 @@ Copyright (c) 2022 Camel Lu
 import sys
 from sqlalchemy import Column, text, DateTime, func
 from sqlalchemy.dialects.mysql import insert
-from db.engine import get_engine, get_orm_base, get_session
-from lib.mysnowflake import IdWorker
+from ..db.engine import get_engine, get_orm_base, get_session
+from ..lib.mysnowflake import IdWorker
 
 ORM_Base = get_orm_base()
 

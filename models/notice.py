@@ -6,7 +6,8 @@ Author: luxuemin2108@gmail.com
 -----
 Copyright (c) 2023 Camel Lu
 '''
-from db.engine import get_engine
+from sqlalchemy.dialects.mysql import insert
+from ..db.engine import get_engine
 from .var import ORM_Base, Model, idWorker
 from sqlalchemy import (UniqueConstraint, ForeignKey, Table,
                         String, Float, Column, text, DateTime, BigInteger, func)
@@ -25,8 +26,13 @@ class Notice(ORM_Base, Model):
     type_code = Column(String(24), nullable=False, comment='类型编码')
     target_time = Column(DateTime, nullable=False, comment='公告日期')
     publish_time = Column(DateTime, nullable=False, comment='公告日期')
-    attach_url = Column(String(12), nullable=False, comment='附件链接')
-
+    attach_url = Column(String(108), nullable=False, comment='附件链接')
+    
+    update_time = Column(DateTime,  server_default=text(
+        'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), onupdate=func.now(), comment='更新时间')
+    create_time = Column(DateTime, server_default=text(
+        'CURRENT_TIMESTAMP'), comment='创建时间')
+    UniqueConstraint(title, target_time, name='uix_1')
     def __init__(self, **kwargs):
         self.id = idWorker.get_id()
         ORM_Base.__init__(self, **kwargs)
@@ -35,6 +41,24 @@ class Notice(ORM_Base, Model):
     def __repr__(self):
         return f"notice(id={self.id!r}, code={self.title!r})"
 
+    @staticmethod
+    def bulk_save(data_list: list, ignore_key=[]):
+        """批量保存(新增或者更新, id只能是新增)
+
+        Args:
+            data_list (list): _description_
+        """
+        ups_stmt = insert(Notice).values(
+            data_list
+        )
+        update_dict = {x.name: x for x in ups_stmt.inserted}
+        # del update_dict['id']
+        for key in ignore_key:
+            del update_dict[key]
+        ups_stmt = ups_stmt.on_duplicate_key_update(update_dict)
+        with engine.connect() as conn:
+            conn.execute(ups_stmt)
+            conn.commit()
 
 def create():
     table = ORM_Base.metadata.tables[Notice.__tablename__]
