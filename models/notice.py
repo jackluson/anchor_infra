@@ -19,14 +19,15 @@ class Notice(ORM_Base, Model):
     __tablename__ = 'notice'
     __table_args__ = {'extend_existing': True}
     id = Column(BigInteger, primary_key=True)
-    title = Column(String(48), nullable=False, comment='公告标题')
+    title = Column(String(128), nullable=False, comment='公告标题')
     name = Column(String(24), nullable=False, comment='名称')
     code = Column(String(12), nullable=False, comment='代码')
-    type = Column(String(12), nullable=False, comment='类型')
+    type = Column(String(64), nullable=False, comment='类型')
     type_code = Column(String(24), nullable=False, comment='类型编码')
+    art_code = Column(String(32), nullable=True, comment='文章编码')
     target_time = Column(DateTime, nullable=False, comment='公告日期')
     publish_time = Column(DateTime, nullable=False, comment='公告日期')
-    attach_url = Column(String(108), nullable=False, comment='附件链接')
+    attach_url = Column(String(108), nullable=True, comment='附件链接')
     
     update_time = Column(DateTime,  server_default=text(
         'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'), onupdate=func.now(), comment='更新时间')
