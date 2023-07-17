@@ -1,19 +1,9 @@
 import time
 import json
-import requests
 import os
 import random
 from .base import BaseApier
 from ..utils.file import write_fund_json_data
-
-from requests.adapters import HTTPAdapter
-from urllib3.util.retry import Retry
-
-session = requests.Session()
-retry = Retry(connect=6, backoff_factor=0.5)
-adapter = HTTPAdapter(max_retries=retry)
-session.mount('http://', adapter)
-session.mount('https://', adapter)
 
 class ApiEastMoney(BaseApier):
     def __init__(self):
@@ -35,7 +25,7 @@ class ApiEastMoney(BaseApier):
             page_size=page_size,
             timestamp=timestamp
         )
-        res = session.get(url, headers=self.headers)
+        res = self.session.get(url, headers=self.headers)
         try:
             if res.status_code == 200:
                 data_text = res.text.replace(callback, '')[1:-1]
@@ -59,7 +49,7 @@ class ApiEastMoney(BaseApier):
             f_node=0,
             s_node=1,
         )
-        res = session.get(url, headers=self.headers)
+        res = self.session.get(url, headers=self.headers)
         try:
             if res.status_code == 200:
                 data_text = res.text.replace(callback, '')[1:-1]
@@ -82,7 +72,7 @@ class ApiEastMoney(BaseApier):
             page_index=1,
             timestamp=timestamp,
         )
-        res = session.get(url, headers=self.headers)
+        res = self.session.get(url, headers=self.headers)
         try:
             if res.status_code == 200:
                 data_text = res.text.replace(callback, '')[1:-1]
@@ -111,7 +101,7 @@ class ApiEastMoney(BaseApier):
             page_index=page_index,
             page_size=page_size,
         )
-        res = session.get(url, headers=self.headers)
+        res = self.session.get(url, headers=self.headers)
         try:
             if res.status_code == 200:
                 data_text = res.text.replace(callback, '')[1:-2]
