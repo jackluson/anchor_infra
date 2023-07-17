@@ -26,7 +26,7 @@ class ApiJiSiLu(BaseApier):
     def get_pre_list(self, *, history="N"):
         cur_date = time.strftime(
             "%Y-%m-%d", time.localtime(time.time()))
-        file_dir = os.getcwd() + f'/data/json/jisilu/{cur_date}/'
+        file_dir = os.getcwd() + f'/data/json/jisilu/'
         filename = 'pre_' + cur_date + '.json'
         is_exist = os.path.exists(file_dir + filename)
         if is_exist:

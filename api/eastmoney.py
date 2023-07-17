@@ -107,7 +107,7 @@ class ApiEastMoney(BaseApier):
                 data_text = res.text.replace(callback, '')[1:-2]
                 res_json = json.loads(data_text)
                 write_fund_json_data(res_json.get(
-                    'data').get('diff'), filename)
+                    'data').get('diff'), filename, file_dir)
                 return res_json.get('data').get('diff')
             else:
                 print('请求异常', res)
