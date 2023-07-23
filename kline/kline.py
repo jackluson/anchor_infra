@@ -63,7 +63,7 @@ class Kline:
             df = df.set_index('date')
             return df
 
-    def get_kline_data(self, *, is_slice=False):
+    def set_kline_data(self, *, is_slice=False):
         begin = self.params.get('begin')
         end = self.params.get('end')
         type = self.params.get('type')
@@ -181,4 +181,4 @@ if __name__ == '__main__':
         'end': '2023-06-01',
     })
 
-    benchmark.get_kline_data(is_slice=True)
+    benchmark.set_kline_data(is_slice=True)

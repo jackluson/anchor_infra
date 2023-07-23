@@ -9,6 +9,7 @@ Copyright (c) 2023 Camel Lu
 from datetime import datetime
 import logging
 from infra.kline.kline import Kline
+from infra.utils.index import timeit
 import pandas as pd
 
 
@@ -41,6 +42,7 @@ class KlineBatcher:
         }
         self.params = params
 
+    @timeit
     def calculate(self, *, drawdown_size=100):
         kline_list_map = dict()
         for index, etf_item in self.df_source_data.iterrows():
@@ -48,7 +50,7 @@ class KlineBatcher:
             symbol = etf_item.get('market').upper() + code
             name = etf_item.get('name')
             kline = Kline(symbol, name, self.params)
-            kline.get_kline_data()
+            kline.set_kline_data()
             if len(kline.df_kline) == 0:
                 print(f'code:{code}, 没有kline数据')
                 kline_list_map[code] = kline.df_kline
