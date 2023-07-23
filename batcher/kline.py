@@ -12,7 +12,7 @@ from infra.kline.kline import Kline
 import pandas as pd
 
 
-class Batcher:
+class KlineBatcher:
     def __init__(self, option: dict) -> None:
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
                             filename='log/batcher.log',  filemode='a', level=logging.INFO)
