@@ -23,7 +23,8 @@ class KlineBatcher:
     def set_params(self, params):
         date = params.get('date') if params.get('date') else self.today
         freq = params.get('freq')
-
+        end = params.get('end')
+        begin = params.get('begin')
         before_day = params.get('before_day')
         if before_day:
             ts = pd.Timestamp(date).timestamp()

@@ -14,9 +14,10 @@ import logging
 from datetime import datetime
 pd.options.mode.chained_assignment = None
 
-save_begin_date = '2023-01-01'
-save_end_date = '2023-07-01'
+save_begin_date = '2016-01-01'
+save_end_date = '2023-06-30'
 
+save_archive_dir = "./data/csv/period/"
 archive_dir = "./data/csv/"
 
 
@@ -70,7 +71,7 @@ class Kline:
         count = self.params.get('count')
         period = self.params.get('period')
         is_in_date = False
-        in_date_file = f"{archive_dir}{self.symbol}_{save_begin_date}_{save_end_date}_{period}.csv"
+        in_date_file = f"{save_archive_dir}{self.symbol}_{save_begin_date}_{save_end_date}_{period}.csv"
         if end:
             filename = f"{archive_dir}{self.symbol}_{begin}_{end}_{period}.csv"
             is_in_date = pd.Timestamp(end).timestamp() <= pd.Timestamp(save_end_date).timestamp(
