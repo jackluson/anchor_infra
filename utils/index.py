@@ -8,6 +8,7 @@ Copyright (c) 2023 Camel Lu
 '''
 import time
 from functools import wraps
+import re
 
 
 def timeit(func):
@@ -21,3 +22,18 @@ def timeit(func):
             f'Function {func.__name__} {kwargs} Took {total_time:.4f} seconds\n')
         return result
     return timeit_wrapper
+
+
+def get_symbol_by_code(stock_code):
+    """
+    根据code规则输出是上证还是深证
+    """
+    if bool(re.search("^(6|9)\d{5}$", stock_code)):
+        symbol = 'SH' + stock_code
+    elif bool(re.search("^(3|0|2)\d{5}$", stock_code)):
+        symbol = 'SZ' + stock_code
+    elif bool(re.search("^(4|8)\d{5}$", stock_code)):
+        symbol = 'BJ' + stock_code
+    else:
+        print('code', stock_code, '未知')
+    return symbol
