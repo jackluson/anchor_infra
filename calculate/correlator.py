@@ -14,18 +14,18 @@ from infra.kline.kline import Kline
 
 
 class Correlator():
-    def __init__(self, compare_list, end_date):
+    def __init__(self, compare_list, end_date, *, size=180):
         self.end_date = end_date
         ts = pd.Timestamp(end_date).timestamp()
         # 取180天的数据比较
         self.begin_date = datetime.fromtimestamp(
-            ts - 2 * 360 * 24 * 3600).strftime("%Y-%m-%d")
+            ts - size * 24 * 3600).strftime("%Y-%m-%d")
         benchmark = Kline('SH000300', '沪深300', {
             'period': 'day',
             'begin': self.begin_date,
             'end': end_date,
         })
-        benchmark.set_kline_data()
+        benchmark.set_kline_data(is_slice=True)
         self.benchmark_len = len(benchmark.df_kline)
         self.compare_list = compare_list
 
@@ -58,12 +58,12 @@ class Correlator():
                             'begin': self.begin_date,
                             'end': end_date,
                             })
-            compare.set_kline_data()
+            compare.set_kline_data(is_slice=True)
             compare_list.append(compare)
         self.compare_list = compare_list
         return self
 
-    def correlate(self):
+    def correlate(self, output=False):
         df_compare = pd.DataFrame()
         un_compare_data = []
         kline_compare_list = []
@@ -73,7 +73,7 @@ class Correlator():
                             'begin': self.begin_date,
                             'end':  self.end_date,
                             })
-            compare.set_kline_data()
+            compare.set_kline_data(is_slice=True)
             kline_compare_list.append(compare)
         for item in kline_compare_list:
             # 长度不一致,不能比较
@@ -97,14 +97,15 @@ class Correlator():
         res_mean = ((res_by_spearman + res)/2).round(3)  # 两种比较取均值
         # res_mean.to_csv('data/rise.csv')
         self.res_compare = res_mean
-
-        # print('不参加评比指数有{}名:'.format(len(un_compare_data)))
-        if len(un_compare_data) > 0:
-            df_uncompare = pd.DataFrame(un_compare_data).set_index("证券名称")
-            # print(df_uncompare.to_markdown())
-        if len(self.res_compare) <= 1:
-            return res_mean
-        return (res.iat[0, 1] + res_by_spearman.iat[0, 1])/2  # 返回第一个与第二个相似值
+        if output:
+            # print('不参加评比指数有{}名:'.format(len(un_compare_data)))
+            if len(un_compare_data) > 0:
+                df_uncompare = pd.DataFrame(un_compare_data).set_index("证券名称")
+                # print(df_uncompare.to_markdown())
+            if len(self.res_compare) <= 1:
+                return res_mean
+            # 返回第一个与第二个相似值
+            return (res.iat[0, 1] + res_by_spearman.iat[0, 1])/2
 
     def filter_near_similarity(self, threshold=0.6):
         # df = pd.read_csv('data/rise.csv').set_index('Unnamed: 0')
