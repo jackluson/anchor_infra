@@ -60,7 +60,7 @@ class Kline:
             df['timestamp'] = pd.to_datetime(
                 df['timestamp'], unit='s', utc=True)
             df = df.set_index('timestamp').tz_convert('Asia/Shanghai')
-            df['date'] = df.index.date
+            df['date'] = df.index.date.astype(str)
             df = df.set_index('date')
             return df
 

@@ -26,11 +26,10 @@ class KlineBatcher:
         end = params.get('end')
         begin = params.get('begin')
         before_day = params.get('before_day')
-        if before_day:
-            ts = pd.Timestamp(date).timestamp()
+        if before_day and not begin:
+            ts = pd.Timestamp(end).timestamp()
             begin = datetime.fromtimestamp(
                 ts - before_day * 24 * 3600).strftime("%Y-%m-%d")
-            end = date
         elif freq and not end:
             res = pd.Timestamp(date).to_period(freq=freq)
             begin = res.start_time.strftime('%Y-%m-%d')
