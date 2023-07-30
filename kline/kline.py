@@ -12,6 +12,7 @@ import pandas as pd
 from infra.api.snowball import ApiSnowBall
 import logging
 from datetime import datetime
+from infra.utils.enum import Freq
 pd.options.mode.chained_assignment = None
 
 save_begin_date = '2016-01-01'
@@ -22,9 +23,10 @@ archive_dir = "./data/csv/"
 
 
 class Kline:
+    date = datetime.now().strftime("%Y-%m-%d")
+    freq = Freq.DAY
+
     def __init__(self, symbol, name, params):
-        self.date = None
-        self.freq = 'D'
         self.api = ApiSnowBall()
         self.symbol = symbol
         self.name = name
@@ -37,6 +39,10 @@ class Kline:
             'period': 'day',
             **params,
         }
+        if params.get('freq'):
+            self.freq = params.get('freq')
+        if params.get('date'):
+            self.date = params.get('date')
         self.params = params
 
     def fetch_kline_data(self):
@@ -173,6 +179,27 @@ class Kline:
         # 计算每一天的涨幅相对低点的涨幅
         self.df_kline['increase_10'] = (
             (self.df_kline['close'] - self.df_kline['min_price_10']) / self.df_kline['min_price_10']).round(4)
+
+    def pre_set_precent(self):
+        end = self.params.get('end')
+        print('end', end)
+        period_week_dict = pd.Timestamp(
+            self.date).to_period(freq=Freq.WEEK.value)
+        begin = period_week_dict.start_time.strftime('%Y-%m-%d')
+        end = period_week_dict.end_time.strftime('%Y-%m-%d')
+        print('begin', begin)
+        print('end', end)
+
+    def set_increase(self, periods_list):
+        for item in periods_list:
+            print("item", item)
+            begin = item['begin']
+            end = item['end']
+            periods = len(self.df_kline.loc[begin:end])
+            self.df_kline[item['key']] = (
+                self.df_kline.loc[:end]['close'].pct_change(periods=periods) * 100)
+
+        print(self.df_kline)
 
 
 if __name__ == '__main__':
