@@ -83,6 +83,7 @@ class KlineBatcher:
             }
         ]
         self.periods_list = periods_list
+        print("periods_list", periods_list)
 
     @timeit
     def calculate(self, *, drawdown_size=100):
@@ -93,7 +94,11 @@ class KlineBatcher:
             code = etf_item.get('code')
             symbol = etf_item.get('market').upper() + code
             name = etf_item.get('name')
-            kline = Kline(symbol, name, self.params)
+            kline = Kline(symbol, name, {
+                # 'load_local': False
+                # 'save_local': False
+            })
+            kline.set_params(self.params)
             kline.set_kline_data()
             kline.df_kline['name'] = name
             kline.df_kline['code'] = code

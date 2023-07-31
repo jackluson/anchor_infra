@@ -25,14 +25,19 @@ archive_dir = "./data/csv/"
 class Kline:
     date = datetime.now().strftime("%Y-%m-%d")
     freq = Freq.DAY
+    load_local = True
+    save_local = True
 
-    def __init__(self, symbol, name, params):
+    def __init__(self, symbol, name, config):
         self.api = ApiSnowBall()
         self.symbol = symbol
         self.name = name
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
                             filename='log/stock_kline_info.log',  filemode='a', level=logging.INFO)
-        self.set_params(params)
+        if config.get('load_local') != None:
+            self.load_local = config.get('load_local')
+        if config.get('save_local') != None:
+            self.save_local = config.get('save_local')
 
     def set_params(self, params):
         params = {
@@ -44,11 +49,13 @@ class Kline:
         if params.get('date'):
             self.date = params.get('date')
         self.params = params
+        return self
 
     def fetch_kline_data(self):
         begin = self.params.get('begin')
         type = self.params.get('type')
         period = self.params.get('period')
+        print("period", period)
         response = self.api.get_kline_info(
             self.symbol, begin, period, type=type, rest=self.params)
         columns = response["column"]
@@ -77,24 +84,28 @@ class Kline:
         count = self.params.get('count')
         period = self.params.get('period')
         is_in_date = False
-        in_date_file = f"{save_archive_dir}{self.symbol}_{save_begin_date}_{save_end_date}_{period}.csv"
         if end:
             filename = f"{archive_dir}{self.symbol}_{begin}_{end}_{period}.csv"
             is_in_date = pd.Timestamp(end).timestamp() <= pd.Timestamp(save_end_date).timestamp(
             ) and pd.Timestamp(begin).timestamp() >= pd.Timestamp(save_begin_date).timestamp()
         elif count:
             filename = f"{archive_dir}{self.symbol}_{begin}_{type}_{str(count)}_{period}.csv"
-        is_exist_file = os.path.exists(filename)
-        if is_exist_file:
-            df_stock_kline_info = pd.read_csv(filename, index_col=[
-                                              'date'], parse_dates=['date'])
-        elif is_in_date and os.path.exists(in_date_file):
-            df_stock_kline_info = pd.read_csv(
-                in_date_file, index_col=['date'], parse_dates=['date'])
-            if is_slice:
-                df_stock_kline_info = df_stock_kline_info.loc[begin:end]
+        if self.load_local:
+            in_date_file = f"{save_archive_dir}{self.symbol}_{save_begin_date}_{save_end_date}_{period}.csv"
+            is_exist_file = os.path.exists(filename)
+            if is_exist_file:
+                df_stock_kline_info = pd.read_csv(filename, index_col=[
+                    'date'], parse_dates=['date'])
+            elif is_in_date and os.path.exists(in_date_file):
+                df_stock_kline_info = pd.read_csv(
+                    in_date_file, index_col=['date'], parse_dates=['date'])
+                if is_slice:
+                    df_stock_kline_info = df_stock_kline_info.loc[begin:end]
+            else:
+                df_stock_kline_info = self.fetch_kline_data()
         else:
             df_stock_kline_info = self.fetch_kline_data()
+        if self.save_local:
             df_stock_kline_info.to_csv(filename)
         self.df_kline = df_stock_kline_info
 
@@ -192,14 +203,11 @@ class Kline:
 
     def set_increase(self, periods_list):
         for item in periods_list:
-            print("item", item)
             begin = item['begin']
             end = item['end']
             periods = len(self.df_kline.loc[begin:end])
             self.df_kline[item['key']] = (
                 self.df_kline.loc[:end]['close'].pct_change(periods=periods) * 100)
-
-        print(self.df_kline)
 
 
 if __name__ == '__main__':
