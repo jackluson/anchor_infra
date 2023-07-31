@@ -18,7 +18,7 @@ pd.options.mode.chained_assignment = None
 save_begin_date = '2016-01-01'
 save_end_date = '2023-06-30'
 
-save_archive_dir = "./data/csv/period/"
+saved_dir = "./data/csv/period/"
 archive_dir = "./data/csv/"
 
 
@@ -27,6 +27,8 @@ class Kline:
     freq = Freq.DAY
     load_local = True
     save_local = True
+    today = datetime.now().strftime("%Y-%m-%d")
+    save_dir = f'./data/csv/{datetime.now().strftime("%Y-%m-%d")}/'
 
     def __init__(self, symbol, name, config):
         self.api = ApiSnowBall()
@@ -85,13 +87,13 @@ class Kline:
         period = self.params.get('period')
         is_in_date = False
         if end:
-            filename = f"{archive_dir}{self.symbol}_{begin}_{end}_{period}.csv"
+            filename = f"{self.save_dir}{self.symbol}_{begin}_{end}_{period}.csv"
             is_in_date = pd.Timestamp(end).timestamp() <= pd.Timestamp(save_end_date).timestamp(
             ) and pd.Timestamp(begin).timestamp() >= pd.Timestamp(save_begin_date).timestamp()
         elif count:
-            filename = f"{archive_dir}{self.symbol}_{begin}_{type}_{str(count)}_{period}.csv"
+            filename = f"{self.save_dir}{self.symbol}_{begin}_{type}_{str(count)}_{period}.csv"
         if self.load_local:
-            in_date_file = f"{save_archive_dir}{self.symbol}_{save_begin_date}_{save_end_date}_{period}.csv"
+            in_date_file = f"{saved_dir}{self.symbol}_{save_begin_date}_{save_end_date}_{period}.csv"
             is_exist_file = os.path.exists(filename)
             if is_exist_file:
                 df_stock_kline_info = pd.read_csv(filename, index_col=[
@@ -106,6 +108,8 @@ class Kline:
         else:
             df_stock_kline_info = self.fetch_kline_data()
         if self.save_local:
+            if not os.path.exists(self.save_dir):
+                os.makedirs(self.save_dir)
             df_stock_kline_info.to_csv(filename)
         self.df_kline = df_stock_kline_info
 
