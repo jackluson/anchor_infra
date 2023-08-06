@@ -17,17 +17,16 @@ from infra.utils.enum import Freq, Scene
 class KlineBatcher:
     scene = Scene.MOMENTUM
     periods_list = []
+    today = datetime.now().strftime("%Y-%m-%d")
 
     def __init__(self, option: dict) -> None:
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
                             filename='log/batcher.log',  filemode='a', level=logging.INFO)
-        self.today = datetime.now().strftime("%Y-%m-%d")
         self.df_source_data = option.get('source_data')
         if option.get('scene'):
             self.scene = option.get('scene')
 
     def set_params(self, params):
-        date = params.get('date') if params.get('date') else self.today
         freq = params.get('freq')
         end = params.get('end')
         begin = params.get('begin')
@@ -37,12 +36,12 @@ class KlineBatcher:
             begin = datetime.fromtimestamp(
                 ts - before_day * 24 * 3600).strftime("%Y-%m-%d")
         elif freq and not end:
+            date = params.get('date') if params.get('date') else self.today
             res = pd.Timestamp(date).to_period(freq=freq.value)
             begin = res.start_time.strftime('%Y-%m-%d')
             end = res.end_time.strftime('%Y-%m-%d')
         params = {
             **params,
-            'date': date,
             'begin': begin,
             'end': end,
         }
@@ -50,8 +49,7 @@ class KlineBatcher:
 
     def set_periods_list(self):
 
-        target_date = self.params.get('date')
-        print("target_date", target_date)
+        target_date = self.params.get('end')
         period_week_dict = pd.Timestamp(
             target_date).to_period(freq=Freq.WEEK.value)
 
@@ -124,7 +122,6 @@ class KlineBatcher:
             },
         ]
         self.periods_list = periods_list
-        print("periods_list", periods_list)
 
     @timeit
     def calculate(self, *, drawdown_size=100):
@@ -154,7 +151,6 @@ class KlineBatcher:
                 kline.calculate_ma()
                 kline.calculate_drawdown(drawdown_size)
             if self.scene == Scene.TREND:
-                # kline.pre_set_precent()
                 kline.set_increase(self.periods_list)
 
             # kline.df_kline.to_csv("data/stock_kline.csv", header=True, index=True)
