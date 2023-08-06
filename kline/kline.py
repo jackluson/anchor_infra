@@ -57,7 +57,6 @@ class Kline:
         begin = self.params.get('begin')
         type = self.params.get('type')
         period = self.params.get('period')
-        print("period", period)
         response = self.api.get_kline_info(
             self.symbol, begin, period, type=type, rest=self.params)
         columns = response["column"]

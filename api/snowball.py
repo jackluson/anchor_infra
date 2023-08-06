@@ -58,6 +58,10 @@ class ApiSnowBall(BaseApier):
         if end:
             end_timestamp = dateutil.parser.parse(end).timestamp()
             rest['end'] = int(end_timestamp * 1000)
+        """
+            begin时间一般是一天开始的时间，end时间一般是一天结束的时间
+            所以begin时间戳是一天开始的时间戳，end时间戳是一天结束的时间戳
+        """
         params = {
             **rest,
             'symbol': symbol.upper(),

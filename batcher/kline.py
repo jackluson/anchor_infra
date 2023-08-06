@@ -49,13 +49,18 @@ class KlineBatcher:
         self.params = params
 
     def set_periods_list(self):
+
         target_date = self.params.get('date')
+        print("target_date", target_date)
         period_week_dict = pd.Timestamp(
             target_date).to_period(freq=Freq.WEEK.value)
+
         period_month_dict = pd.Timestamp(
             target_date).to_period(freq=Freq.MONTH.value)
+
         period_year_dict = pd.Timestamp(
             target_date).to_period(freq=Freq.YEAD.value)
+
         begin_week = period_week_dict.start_time.strftime('%Y-%m-%d')
         end_week = period_week_dict.end_time.strftime('%Y-%m-%d')
 
@@ -64,6 +69,17 @@ class KlineBatcher:
 
         begin_year = period_year_dict.start_time.strftime('%Y-%m-%d')
         end_year = period_year_dict.end_time.strftime('%Y-%m-%d')
+
+        begin_recent_days_10 = pd.Timestamp(
+            target_date) - pd.DateOffset(days=10)
+        begin_recent_days_20 = pd.Timestamp(
+            target_date) - pd.DateOffset(days=20)
+        begin_recent_days_30 = pd.Timestamp(
+            target_date) - pd.DateOffset(days=30)
+        begin_recent_days_60 = pd.Timestamp(
+            target_date) - pd.DateOffset(days=60)
+        begin_recent_month_3 = pd.Timestamp(
+            target_date) - pd.DateOffset(months=3)
 
         periods_list = [
             {
@@ -80,7 +96,32 @@ class KlineBatcher:
                 'key': 'year_increase',
                 'begin': begin_year,
                 'end': end_year,
-            }
+            },
+            {
+                'key': 'recent_day_10_increase',
+                'begin': begin_recent_days_10.strftime('%Y-%m-%d'),
+                'end': target_date,
+            },
+            {
+                'key': 'recent_day_20_increase',
+                'begin': begin_recent_days_20.strftime('%Y-%m-%d'),
+                'end': target_date,
+            },
+            {
+                'key': 'recent_day_30_increase',
+                'begin': begin_recent_days_30.strftime('%Y-%m-%d'),
+                'end': target_date,
+            },
+            {
+                'key': 'recent_day_60_increase',
+                'begin': begin_recent_days_60.strftime('%Y-%m-%d'),
+                'end': target_date,
+            },
+            {
+                'key': 'recent_month_3_increase',
+                'begin': begin_recent_month_3.strftime('%Y-%m-%d'),
+                'end': target_date,
+            },
         ]
         self.periods_list = periods_list
         print("periods_list", periods_list)
