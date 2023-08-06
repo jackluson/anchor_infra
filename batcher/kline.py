@@ -129,6 +129,8 @@ class KlineBatcher:
         if self.scene == Scene.TREND:
             self.set_periods_list()
         for index, etf_item in self.df_source_data.iterrows():
+            if index % 50 == 0:
+                print('progress:', index)
             code = etf_item.get('code')
             symbol = etf_item.get('market').upper() + code
             name = etf_item.get('name')

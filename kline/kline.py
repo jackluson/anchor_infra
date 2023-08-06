@@ -195,9 +195,16 @@ class Kline:
         for item in periods_list:
             begin = item['begin']
             end = item['end']
+            max_periods = len(self.df_kline)
             periods = len(self.df_kline.loc[begin:end])
-            self.df_kline[item['key']] = (
-                self.df_kline.loc[:end]['close'].pct_change(periods=periods) * 100)
+            if periods >= max_periods:
+                self.df_kline['percent_acc'] = self.df_kline[[
+                    'percent']]/100 + 1
+                self.df_kline[item['key']
+                              ] = ((self.df_kline['percent_acc'].cumprod() - 1) * 100).round(2)
+            else:
+                self.df_kline[item['key']] = (
+                    self.df_kline.loc[:end]['close'].pct_change(periods=periods) * 100).round(2)
 
 
 if __name__ == '__main__':
