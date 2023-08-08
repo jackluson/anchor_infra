@@ -82,41 +82,49 @@ class KlineBatcher:
         periods_list = [
             {
                 'key': 'week_increase',
+                'name': '周涨幅',
                 'begin': begin_week,
                 'end': end_week,
             },
             {
                 'key': 'month_increase',
+                'name': '月涨幅',
                 'begin': begin_month,
                 'end': end_month,
             },
             {
                 'key': 'year_increase',
+                'name': '年涨幅',
                 'begin': begin_year,
                 'end': end_year,
             },
             {
                 'key': 'recent_day_10_increase',
+                'name': '近10日涨幅',
                 'begin': begin_recent_days_10.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
             {
                 'key': 'recent_day_20_increase',
+                'name': '近20日涨幅',
                 'begin': begin_recent_days_20.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
             {
                 'key': 'recent_day_30_increase',
+                'name': '近30日涨幅',
                 'begin': begin_recent_days_30.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
             {
                 'key': 'recent_day_60_increase',
+                'name': '近30日涨幅',
                 'begin': begin_recent_days_60.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
             {
                 'key': 'recent_month_3_increase',
+                'name': '近3个月涨幅',
                 'begin': begin_recent_month_3.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
