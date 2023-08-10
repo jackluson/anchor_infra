@@ -23,6 +23,11 @@ class ApiJiSiLu(BaseApier):
         self.set_client_headers(
             cookie_env_key="jisilu_cookie", referer=referer, origin=origin, )
 
+    def get_last_indicator(self):
+        url = f"{self.origin}/data/indicator/get_last_indicator/"
+        data = self.post(url)
+        return data
+
     def get_pre_list(self, *, history="N"):
         cur_date = time.strftime(
             "%Y-%m-%d", time.localtime(time.time()))
