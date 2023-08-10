@@ -27,6 +27,11 @@ class ApiJiSiLu(BaseApier):
         url = f"{self.origin}/data/indicator/get_last_indicator/"
         data = self.post(url)
         return data
+    
+    def get_last_cb_index_quote(self):
+        url = f"{self.origin}/webapi/cb/index_quote/"
+        data = self.get(url)
+        return data
 
     def get_pre_list(self, *, history="N"):
         cur_date = time.strftime(
