@@ -27,21 +27,12 @@ class ApiSnowBall(BaseApier):
             self.xue_qiu_cookie = xue_qiu_cookie
         self.set_client_headers()
 
-
-    def get(self, url, **kwargs):
-        response = self.session.get(url, headers=self.headers, **kwargs)
-        try:
-            if response.status_code == 200:
-                return response.json().get('data')
-        except:
-            raise('请求异常')
-
     def get_portfolio_list(self, *, system=True):
         url = f"{self.base_url}/v5/stock/portfolio/list.json?system={system}"
-        data = self.get(url)
+        data = self.get(url).get("data")
         return data
     
     def get_portfolio_stocks(self, pid, *, category=1, size=1000):
         url = f"{self.base_url}/v5/stock/portfolio/stock/list.json?pid={pid}&category={category}&size={size}"
-        data = self.get(url)
+        data = self.get(url).get("data")
         return data

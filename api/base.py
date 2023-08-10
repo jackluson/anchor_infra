@@ -40,3 +40,18 @@ class BaseApier:
         self.headers = headers
         return headers
 
+    def get(self, url, **kwargs):
+        response = self.session.get(url, headers=self.headers, **kwargs)
+        try:
+            if response.status_code == 200:
+                return response.json()
+        except:
+            raise('请求异常')
+
+    def post(self, url, **kwargs):
+        response = self.session.post(url, headers=self.headers, **kwargs)
+        try:
+            if response.status_code == 200:
+                return response.json()
+        except:
+            raise('请求异常')

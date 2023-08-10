@@ -34,14 +34,9 @@ class ApiJiSiLu(BaseApier):
                 data = json.load(f)
                 return data
         url = f"{self.origin}/webapi/cb/pre/?history={history}"
-        res = requests.post(url, headers=self.headers)
-        try:
-            if res.status_code == 200:
-                res_json = res.json()
-                write_fund_json_data(res_json.get("data"), filename, file_dir)
-                return res_json.get("data")
-        except:
-            raise ('请求异常')
+        data = self.post(url).get('data')
+        write_fund_json_data(data, filename, file_dir)
+        return data
 
     def get_diviend_rate(self, *, industry=None):
 
