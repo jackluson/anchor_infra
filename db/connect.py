@@ -1,13 +1,13 @@
 
 import pymysql
-from config.env import env_db_host, env_db_name, env_db_user, env_db_password, env_db_port
+from ..config.env import env_db_host, env_db_name, env_db_user, env_db_password, env_db_port
 
 
 def connect():
     connect = pymysql.connect(
         host=env_db_host,
-        user=env_db_user, 
-        password=env_db_password, 
+        user=env_db_user,
+        password=env_db_password,
         db=env_db_name,
         port=int(env_db_port),
         charset='utf8')

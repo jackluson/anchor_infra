@@ -8,9 +8,11 @@ Copyright (c) 2023 Camel Lu
 '''
 
 import os
+import dateutil
 
 from .base import BaseApier
 from ..utils.driver import get_request_header_key
+
 
 class ApiSnowBall(BaseApier):
     def __init__(self, need_login=False):
@@ -31,7 +33,7 @@ class ApiSnowBall(BaseApier):
         url = f"{self.base_url}/v5/stock/portfolio/list.json?system={system}"
         data = self.get(url).get("data")
         return data
-    
+
     def get_portfolio_stocks(self, pid, *, category=1, size=1000):
         url = f"{self.base_url}/v5/stock/portfolio/stock/list.json?pid={pid}&category={category}&size={size}"
         data = self.get(url).get("data")
