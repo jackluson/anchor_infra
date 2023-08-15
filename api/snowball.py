@@ -7,6 +7,7 @@ Author: luxuemin2108@gmail.com
 Copyright (c) 2023 Camel Lu
 '''
 
+import json
 import os
 import dateutil
 
@@ -38,3 +39,25 @@ class ApiSnowBall(BaseApier):
         url = f"{self.base_url}/v5/stock/portfolio/stock/list.json?pid={pid}&category={category}&size={size}"
         data = self.get(url).get("data")
         return data
+
+    def add_portfolio(self, symbols):
+        url = f"{self.base_url}/v5/stock/portfolio/stock/add.json"
+        payload = {
+            "symbols": symbols,
+        }
+        res = self.post(url, data=payload)
+        if res.get('data') != True:
+            print('add_portfolio failed pls check')
+        return res
+
+    def modify_portfolio(self, symbols, pnames, *, category=1):
+        url = f"{self.base_url}/v5/stock/portfolio/stock/modify_portfolio.json"
+        payload = {
+            "symbols": symbols,
+            "pnames": pnames,
+            "category": category,
+        }
+        res = self.post(url, data=payload)
+        if res.get('data') != True:
+            print('modify_portfolio failed pls check')
+        return res

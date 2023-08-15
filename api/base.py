@@ -14,7 +14,6 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 
-
 class BaseApier:
     headers = dict()
 
@@ -28,6 +27,7 @@ class BaseApier:
         session.mount('http://', adapter)
         session.mount('https://', adapter)
         self.session = session
+
     def set_client_headers(self, *,  cookie_env_key="xue_qiu_cookie", referer="https://xueqiu.com", origin=None):
         cookie = self.__dict__.get(cookie_env_key)
         headers = {
@@ -35,7 +35,7 @@ class BaseApier:
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36',
             'Origin': origin if origin else referer,
             'Referer': referer if referer else self.referer,
-            'Cookie': cookie
+            'Cookie': cookie,
         }
         self.headers = headers
         return headers
@@ -46,12 +46,16 @@ class BaseApier:
             if response.status_code == 200:
                 return response.json()
         except:
-            raise('请求异常')
+            raise ('请求异常')
 
     def post(self, url, **kwargs):
-        response = self.session.post(url, headers=self.headers, **kwargs)
+        merge_header = {
+            **self.headers,
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+        response = self.session.post(url, headers=merge_header, **kwargs)
         try:
             if response.status_code == 200:
                 return response.json()
         except:
-            raise('请求异常')
+            raise ('请求异常')
