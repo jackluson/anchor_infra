@@ -50,6 +50,16 @@ class ApiSnowBall(BaseApier):
             print('add_portfolio failed pls check')
         return res
 
+    def cancel_portfolio(self, symbols):
+        url = f"{self.base_url}/v5/stock/portfolio/stock/cancel.json"
+        payload = {
+            "symbols": symbols,
+        }
+        res = self.post(url, data=payload)
+        if res.get('data') != True:
+            print('add_portfolio failed pls check')
+        return res
+
     def modify_portfolio(self, symbols, pnames, *, category=1):
         url = f"{self.base_url}/v5/stock/portfolio/stock/modify_portfolio.json"
         payload = {
