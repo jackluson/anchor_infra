@@ -18,7 +18,7 @@ class ApiJiSiLu(BaseApier):
     def __init__(self):
         origin = 'https://www.jisilu.cn'
         referer = 'https://www.jisilu.cn/data/stock/dividend_rate/'
-        self.origin=origin
+        self.origin = origin
         super().__init__()
         self.set_client_headers(
             cookie_env_key="jisilu_cookie", referer=referer, origin=origin, )
@@ -27,7 +27,7 @@ class ApiJiSiLu(BaseApier):
         url = f"{self.origin}/data/indicator/get_last_indicator/"
         data = self.post(url)
         return data
-    
+
     def get_last_cb_index_quote(self):
         url = f"{self.origin}/webapi/cb/index_quote/"
         data = self.get(url)
@@ -44,7 +44,7 @@ class ApiJiSiLu(BaseApier):
                 data = json.load(f)
                 return data
         url = f"{self.origin}/webapi/cb/pre/?history={history}"
-        data = self.post(url).get('data')
+        data = self.get(url).get('data')
         write_fund_json_data(data, filename, file_dir)
         return data
 
