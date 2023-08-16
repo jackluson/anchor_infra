@@ -71,3 +71,28 @@ class ApiSnowBall(BaseApier):
         if res.get('data') != True:
             print('modify_portfolio failed pls check')
         return res
+
+    def get_kline_info(self, symbol, begin, period, *, type='before', rest=dict()):
+        begin_timestamp = dateutil.parser.parse(begin).timestamp()
+        end = rest.get('end')
+        if end:
+            end_timestamp = dateutil.parser.parse(end).timestamp()
+            rest['end'] = int(end_timestamp * 1000)
+        """
+            begin时间一般是一天开始的时间，end时间一般是一天结束的时间
+            所以begin时间戳是一天开始的时间戳，end时间戳是一天结束的时间戳
+        """
+        params = {
+            **rest,
+            'symbol': symbol.upper(),
+            'period': period,
+            'type': 'before' if type == None else type,  # 默认前复权数据
+            # JavaScript时间戳 = python时间戳 * 1000
+            'begin': int(begin_timestamp * 1000),
+            'indicator': 'kline,pe,pb,ps,pcf,market_capital,agt,ggt,balance',
+            # 'end': int(end_timestamp * 1000),
+        }
+        url = f"{self.base_url}/v5/stock/chart/kline.json"
+        data = self.get(url, params=params).get('data')
+        # print("data", data)
+        return data
