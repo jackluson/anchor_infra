@@ -24,16 +24,20 @@ def timeit(func):
     return timeit_wrapper
 
 
-def get_symbol_by_code(stock_code):
+def get_symbol_by_code(code):
     """
     根据code规则输出是上证还是深证
     """
-    if bool(re.search("^(6|9)\d{5}$", stock_code)):
-        symbol = 'SH' + stock_code
-    elif bool(re.search("^(3|0|2)\d{5}$", stock_code)):
-        symbol = 'SZ' + stock_code
-    elif bool(re.search("^(4|8)\d{5}$", stock_code)):
-        symbol = 'BJ' + stock_code
+    if bool(re.search("^(6|9)\d{5}$", code)):
+        symbol = 'SH' + code
+    elif bool(re.search("^(3|0|2)\d{5}$", code)):
+        symbol = 'SZ' + code
+    elif bool(re.search("^(4|8)\d{5}$", code)):
+        symbol = 'BJ' + code
+    elif bool(re.search("^(11)\d{4}$", code)):  # 沪市可转债
+        symbol = 'SH' + code
+    elif bool(re.search("^(12)\d{4}$", code)):  # 深市可转债
+        symbol = 'SZ' + code
     else:
-        print('code', stock_code, '未知')
+        print('code', code, '未知')
     return symbol
