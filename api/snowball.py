@@ -30,9 +30,13 @@ class ApiSnowBall(BaseApier):
             self.xue_qiu_cookie = xue_qiu_cookie
         self.set_client_headers()
 
-    def get_portfolio_list(self, *, system=True):
-        url = f"{self.base_url}/v5/stock/portfolio/list.json?system={system}"
-        data = self.get(url).get("data")
+    def get_portfolio_list(self, *, symbol=None, system=True):
+        url = f"{self.base_url}/v5/stock/portfolio/list.json"
+        params = {
+            'system': system,
+            'symbol': symbol
+        }
+        data = self.get(url, params=params).get("data")
         return data
 
     def get_portfolio_stocks(self, pid, *, category=1, size=1000):
