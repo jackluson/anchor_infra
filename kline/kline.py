@@ -27,7 +27,7 @@ class Kline:
     today = datetime.now().strftime("%Y-%m-%d")
     save_dir = f'./data/csv/{datetime.now().strftime("%Y-%m-%d")}/'
 
-    def __init__(self, symbol, name, config):
+    def __init__(self, symbol, name, config=dict()):
         self.api = ApiSnowBall()
         self.symbol = symbol
         self.name = name
@@ -208,10 +208,10 @@ class Kline:
 
 
 if __name__ == '__main__':
-    benchmark = Kline('SH000300', '沪深300', {
+    benchmark = Kline('SH000300', '沪深300')
+    benchmark.set_params({
         'period': 'day',
         'begin': '2023-01-01',
         'end': '2023-06-01',
     })
-
     benchmark.set_kline_data(is_slice=True)

@@ -20,7 +20,8 @@ class Correlator():
         # 取180天的数据比较
         self.begin_date = datetime.fromtimestamp(
             ts - size * 24 * 3600).strftime("%Y-%m-%d")
-        benchmark = Kline('SH000300', '沪深300', {
+        benchmark = Kline('SH000300', '沪深300')
+        benchmark.set_params({
             'period': 'day',
             'begin': self.begin_date,
             'end': end_date,
@@ -40,7 +41,8 @@ class Correlator():
             symbol = item.get('symbol')
             exist_symbols.append(symbol)
             name = item.get('name')
-            compare = Kline(symbol, name, {
+            compare = Kline(symbol, name)
+            compare.set_params({
                 'period': 'day',
                 'begin': self.begin_date,
                 'end': end_date,
@@ -53,11 +55,12 @@ class Correlator():
             if item_symbol in exist_symbols:
                 continue
             item_name = item.get('name')
-            compare = Kline(item_symbol, item_name, {
-                            'period': 'day',
-                            'begin': self.begin_date,
-                            'end': end_date,
-                            })
+            compare = Kline(item_symbol, item_name)
+            compare.set_params({
+                'period': 'day',
+                'begin': self.begin_date,
+                'end': end_date,
+            })
             compare.set_kline_data(is_slice=True)
             compare_list.append(compare)
         self.compare_list = compare_list
@@ -68,11 +71,12 @@ class Correlator():
         un_compare_data = []
         kline_compare_list = []
         for item in self.compare_list:
-            compare = Kline(item.get('symbol'), item.get('name'), {
-                            'period': 'day',
-                            'begin': self.begin_date,
-                            'end':  self.end_date,
-                            })
+            compare = Kline(item.get('symbol'), item.get('name'))
+            compare.set_params({
+                'period': 'day',
+                'begin': self.begin_date,
+                'end':  self.end_date,
+            })
             compare.set_kline_data(is_slice=True)
             kline_compare_list.append(compare)
         for item in kline_compare_list:
