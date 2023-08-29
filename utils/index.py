@@ -24,7 +24,7 @@ def timeit(func):
     return timeit_wrapper
 
 
-def get_symbol_by_code(code):
+def get_symbol_by_code(code, *,  maybe_etf=False):
     """
     根据code规则输出是上证还是深证
     """
@@ -38,6 +38,10 @@ def get_symbol_by_code(code):
         symbol = 'SH' + code
     elif bool(re.search("^(12)\d{4}$", code)):  # 深市可转债
         symbol = 'SZ' + code
+    elif bool(maybe_etf and re.search("^(1)\d{5}$", code)):  # 深市ETF
+        symbol = 'SZ' + code
+    elif bool(maybe_etf and re.search("^(5)\d{5}$", code)):  # 沪市ETF
+        symbol = 'SH' + code
     else:
         print('code', code, '未知')
     return symbol
