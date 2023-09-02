@@ -18,5 +18,6 @@ class Freq(Enum):
 
 
 class Scene(Enum):
-    TREND = 'trend'
+    STATS = 'stats'
     MOMENTUM = 'momentum'
+    TREND = 'trend'

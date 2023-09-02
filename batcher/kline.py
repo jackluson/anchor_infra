@@ -134,14 +134,14 @@ class KlineBatcher:
     @timeit
     def calculate(self, *, drawdown_size=100):
         kline_list_map = dict()
-        if self.scene == Scene.TREND:
+        if self.scene == Scene.STATS:
             self.set_periods_list()
-        for index, etf_item in self.df_source_data.iterrows():
+        for index, source_item in self.df_source_data.iterrows():
             if index % 50 == 0:
                 print('progress:', index)
-            code = etf_item.get('code')
-            symbol = etf_item.get('market').upper() + code
-            name = etf_item.get('name')
+            code = source_item.get('code')
+            symbol = source_item.get('market').upper() + code
+            name = source_item.get('name')
             kline = Kline(symbol, name, {
                 # 'load_local': False
                 # 'save_local': False
@@ -150,7 +150,7 @@ class KlineBatcher:
             kline.set_kline_data()
             kline.df_kline['name'] = name
             kline.df_kline['code'] = code
-            kline.df_kline['market'] = etf_item.get('market')
+            kline.df_kline['market'] = source_item.get('market')
             kline.df_kline['symbol'] = symbol
             if len(kline.df_kline) == 0:
                 print(f'code:{code}, 没有kline数据')
@@ -160,9 +160,10 @@ class KlineBatcher:
                 kline.calculate_mv()
                 kline.calculate_ma()
                 kline.calculate_drawdown(drawdown_size)
-            if self.scene == Scene.TREND:
+            if self.scene == Scene.STATS:
                 kline.set_increase(self.periods_list)
-
+            if self.scene == Scene.TREND:
+                kline.calculate_ma()
             # kline.df_kline.to_csv("data/stock_kline.csv", header=True, index=True)
             kline_list_map[code] = kline.df_kline
         self.kline_list_map = kline_list_map
