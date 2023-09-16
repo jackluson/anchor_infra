@@ -102,9 +102,10 @@ class ApiSnowBall(BaseApier):
         return data
 
     @BaseApier.Cache('/data/json/snowball/top_holders')
-    def get_top_holders(self, symbol, **args):
+    def get_top_holders(self, symbol, *, circula=0, **args):
         params = {
             'symbol':  symbol.upper(),
+            'circula': circula,
             **args
         }
         url = f"{self.base_url}/v5/stock/f10/cn/top_holders.json"

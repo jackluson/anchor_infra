@@ -85,6 +85,7 @@ class BaseApier:
         return headers
 
     def get(self, url, **kwargs):
+        # self.logger.info(f'host:{self.__dict__.get("base_url")}')
         # self.logger.error(f'host:{self.__dict__.get("base_url")}')
         response = self.session.get(url, headers=self.headers, **kwargs)
         try:
@@ -128,18 +129,13 @@ class BaseApier:
                         cache_key = args[cache_key_position]
                     elif type(cache_key_position) == str:
                         cache_key = kwargs.get(cache_key_position)
-                    print("cache_key", cache_key)
-                    print('kwargs', kwargs)
                     file_dir = os.getcwd() + path + '/'
                     cache_filename_path = f"{cache_key}.json"
-                    print("file_dir", file_dir)
                     fullpath = f"{file_dir}{cache_filename_path}"
                     is_exist = os.path.exists(fullpath)
 
                     def fn():
-                        print('cache开始 ...', func.__name__, path)
                         data = func(*args, **kwargs)
-                        print('cache结束 ...')
                         write_fund_json_data(
                             data, cache_filename_path, file_dir)
                         return data
