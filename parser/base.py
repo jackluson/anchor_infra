@@ -10,6 +10,7 @@ import requests
 
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
+from urllib3 import disable_warnings
 
 
 class BaseParser:
@@ -17,6 +18,7 @@ class BaseParser:
 
     def __init__(self):
         session = requests.Session()
+        disable_warnings()
         retry = Retry(connect=6, backoff_factor=0.5)
         adapter = HTTPAdapter(max_retries=retry)
         session.mount('http://', adapter)

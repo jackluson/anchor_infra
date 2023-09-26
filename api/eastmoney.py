@@ -5,6 +5,7 @@ import random
 from .base import BaseApier
 from ..utils.file import write_fund_json_data
 
+
 class ApiEastMoney(BaseApier):
     def __init__(self):
         super().__init__()
@@ -109,6 +110,47 @@ class ApiEastMoney(BaseApier):
                 write_fund_json_data(res_json.get(
                     'data').get('diff'), filename, file_dir)
                 return res_json.get('data').get('diff')
+            else:
+                print('请求异常', res)
+        except:
+            raise ('中断')
+
+    def get_yzxdr(self, code: str, *, end_date='2023-06-30', retry=True):
+        file_dir = os.getcwd() + '/.cache/yzxdr'
+        filename = f'{code}_{end_date}.json'
+        is_exist = os.path.exists(file_dir + filename)
+        if is_exist:
+            with open(file_dir + filename, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data
+        timestamp = int(time.time() * 1000)
+        callback = "jQuery11230688981214770831_" + str(timestamp)
+        params = {
+            'callback': callback,
+            'sortColumns': 'SHAREHDNUM',
+            'sortTypes': -1,
+            'pageSize': 50,
+            'pageNumber': 1,
+            'columns': 'ALL',
+            'reportName': 'RPTA_WEB_YZXDRXQ',
+            'filter': f'(DIM_SCODE="{code}")(ENDDATE=\'{end_date}\')',
+        }
+        url = "https://datacenter-web.eastmoney.com/api/data/v1/get"
+        res = self.session.get(url, params=params,  headers=self.headers)
+        try:
+            if res.status_code == 200:
+                data_text = res.text.replace(callback, '')[1:-2]
+                res_json = json.loads(data_text)
+                result = res_json.get('result')
+                success = res_json.get('success')
+                if result and success:
+                    write_fund_json_data(result.get(
+                        'data'), filename, file_dir)
+                    return result.get('data')
+                else:
+                    if retry:
+                        return self.get_yzxdr(code, end_date='2023-03-31', retry=False)
+                    return []
             else:
                 print('请求异常', res)
         except:
