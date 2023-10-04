@@ -10,8 +10,13 @@ import time
 import json
 import requests
 import os
+from infra.cache.beaker import create_cache, EndMode
 from .base import BaseApier
 from ..utils.file import write_fund_json_data
+
+
+def create_jisilu_cache(*, expire=3600, end=EndMode.Day):
+    return create_cache(module="jisilu", expire=3600, end=EndMode.Day)
 
 
 class ApiJiSiLu(BaseApier):
@@ -33,19 +38,12 @@ class ApiJiSiLu(BaseApier):
         data = self.get(url)
         return data
 
+    # @BaseApier.DiskCache(module="jisilu", expire=3600, end=EndMode.Day)
+    # @create_cache(module="jisilu", expire=3600, end=EndMode.Day)
+    @create_jisilu_cache(expire=3600, end=EndMode.Day)
     def get_pre_list(self, *, history="N"):
-        cur_date = time.strftime(
-            "%Y-%m-%d", time.localtime(time.time()))
-        file_dir = os.getcwd() + f'/data/json/jisilu/'
-        filename = 'pre_' + cur_date + '.json'
-        is_exist = os.path.exists(file_dir + filename)
-        if is_exist:
-            with open(file_dir + filename, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                return data
         url = f"{self.origin}/webapi/cb/pre/?history={history}"
         data = self.get(url).get('data')
-        write_fund_json_data(data, filename, file_dir)
         return data
 
     def get_diviend_rate(self, *, industry=None):

@@ -9,9 +9,13 @@ Copyright (c) 2023 Camel Lu
 import logging
 import os
 import json
+from datetime import datetime
+import pandas as pd
 from dotenv import load_dotenv
 import requests
 from functools import wraps
+from infra.cache.beaker import cache, create_cache, EndMode
+from infra.utils.index import timeit
 from ..utils.file import write_fund_json_data
 
 from requests.adapters import HTTPAdapter
@@ -119,7 +123,7 @@ class BaseApier:
         return _log
 
     @staticmethod
-    def Cache(path, cache_key_position=1, *, use_cache=True):
+    def CacheJSON(path, cache_key_position=1, *, use_cache=True):
         def _log(func):
             @wraps(func)
             def wrapper(*args, **kwargs):
@@ -155,3 +159,7 @@ class BaseApier:
                     return func(*args, **kwargs)
             return wrapper
         return _log
+
+    @staticmethod
+    def Cache(*args, **kwargs):
+        return create_cache(*args, **kwargs)
