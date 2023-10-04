@@ -11,11 +11,18 @@ import json
 import os
 import dateutil
 
+from infra.cache.beaker import create_cache, EndMode
 from .base import BaseApier
 from ..utils.driver import get_request_header_key
 
 
+def create_snowball_cache(*, expire=3600, end=EndMode.Day):
+    return create_cache(module="snowball", expire=3600, end=EndMode.Day)
+
+
 class ApiSnowBall(BaseApier):
+    xue_qiu_cookie = None
+
     def __init__(self, need_login=False):
         origin = 'https://xueqiu.com'
         host = 'xueqiu.com'
@@ -101,7 +108,8 @@ class ApiSnowBall(BaseApier):
         # print("data", data)
         return data
 
-    @BaseApier.Cache('/data/json/snowball/top_holders')
+    # @BaseApier.CacheJSON('/data/json/snowball/top_holders')
+    @create_snowball_cache(end=EndMode.Month)
     def get_top_holders(self, symbol, *, circula=0, **args):
         params = {
             'symbol':  symbol.upper(),

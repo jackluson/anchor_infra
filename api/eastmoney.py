@@ -2,8 +2,13 @@ import time
 import json
 import os
 import random
+from infra.cache.beaker import create_cache, EndMode
 from .base import BaseApier
 from ..utils.file import write_fund_json_data
+
+
+def create_eastmoney_cache(*, expire=3600, end=EndMode.Day):
+    return create_cache(module="eastmoney", expire=3600, end=EndMode.Day)
 
 
 class ApiEastMoney(BaseApier):
@@ -115,14 +120,8 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
+    @create_eastmoney_cache(end=EndMode.Month)
     def get_yzxdr(self, code: str, *, end_date='2023-06-30', retry=True):
-        file_dir = os.getcwd() + '/.cache/yzxdr'
-        filename = f'{code}_{end_date}.json'
-        is_exist = os.path.exists(file_dir + filename)
-        if is_exist:
-            with open(file_dir + filename, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                return data
         timestamp = int(time.time() * 1000)
         callback = "jQuery11230688981214770831_" + str(timestamp)
         params = {
@@ -144,8 +143,6 @@ class ApiEastMoney(BaseApier):
                 result = res_json.get('result')
                 success = res_json.get('success')
                 if result and success:
-                    write_fund_json_data(result.get(
-                        'data'), filename, file_dir)
                     return result.get('data')
                 else:
                     if retry:

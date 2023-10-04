@@ -6,6 +6,7 @@ Author: luxuemin2108@gmail.com
 -----
 Copyright (c) 2023 Camel Lu
 '''
+import sqlalchemy
 import time
 from functools import wraps
 import re
@@ -21,6 +22,22 @@ def timeit(func):
         print(
             f'Function {func.__name__} {kwargs} Took {total_time:.4f} seconds\n')
         return result
+    return timeit_wrapper
+
+
+def timeit_with_log(*, is_log=True):
+    def timeit_wrapper(func):
+        @wraps(func)
+        def timeit_wrapper_core(*args, **kwargs):
+            start_time = time.perf_counter()
+            result = func(*args, **kwargs)
+            end_time = time.perf_counter()
+            total_time = end_time - start_time
+            if is_log:
+                print(
+                    f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds\n')
+            return result
+        return timeit_wrapper_core
     return timeit_wrapper
 
 

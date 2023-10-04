@@ -5,6 +5,7 @@ from functools import wraps
 from beaker.util import parse_cache_config_options
 import pandas as pd
 
+from infra.utils.index import timeit_with_log
 from ..utils.index import timeit
 
 cache_opts = {
@@ -23,23 +24,25 @@ class EndMode(Enum):
 cache = CacheManager(**parse_cache_config_options(cache_opts))
 
 
-def create_cache(*, module, type="file", expire=3600, end: EndMode = None):
+def create_cache(*, module, type="file", expire=3600, end: EndMode = None, use_in_class=True):
     persistence_seconds = expire
     if end:
         now = datetime.now()
         period = pd.Period(value=now, freq=end.value)
         delta = period.end_time - now
         persistence_seconds = delta.seconds
+        print("persistence_seconds", persistence_seconds)
 
     def _cache_fn(func):
-        @timeit
+        @timeit_with_log(is_log=True)
         @wraps(func)
         def wrapper(*args, **kwargs):
             @cache.cache(module, type=type, expire=persistence_seconds)
-            def func_dummy(**kwargs):
-                print("kwargs", args, kwargs)
+            def func_dummy(*innerArgs, **kwargs):
                 return func(*args, **kwargs)
-            return func_dummy(**kwargs)
+            # 第一个参数是self，排除
+            temp_args = args[1:] if use_in_class else args
+            return func_dummy(*temp_args, **kwargs)
         return wrapper
     # return cache.cache('temp', type='file', expire=10)
     return _cache_fn
