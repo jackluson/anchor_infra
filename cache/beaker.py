@@ -6,7 +6,7 @@ from beaker.util import parse_cache_config_options
 import pandas as pd
 
 from infra.utils.index import timeit_with_log
-from ..utils.index import timeit
+from infra.logger.logger import Logger
 
 cache_opts = {
     'cache.type': 'file',

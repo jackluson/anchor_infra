@@ -10,6 +10,9 @@ import sqlalchemy
 import time
 from functools import wraps
 import re
+from infra.logger.logger import Logger
+
+logger = Logger(file='log/timer.log', show_stream=False)
 
 
 def timeit(func):
@@ -34,8 +37,10 @@ def timeit_with_log(*, is_log=True):
             end_time = time.perf_counter()
             total_time = end_time - start_time
             if is_log:
-                print(
+                logger.info(
                     f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds\n')
+                # print(
+                #     f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds\n')
             return result
         return timeit_wrapper_core
     return timeit_wrapper
