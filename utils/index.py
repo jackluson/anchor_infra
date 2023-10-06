@@ -38,7 +38,7 @@ def timeit_with_log(*, is_log=True):
             total_time = end_time - start_time
             if is_log:
                 logger.info(
-                    f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds\n')
+                    f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds')
                 # print(
                 #     f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds\n')
             return result

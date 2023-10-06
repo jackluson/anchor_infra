@@ -31,7 +31,6 @@ def create_cache(*, module, type="file", expire=3600, end: EndMode = None, use_i
         period = pd.Period(value=now, freq=end.value)
         delta = period.end_time - now
         persistence_seconds = delta.seconds
-        print("persistence_seconds", persistence_seconds)
 
     def _cache_fn(func):
         @timeit_with_log(is_log=True)

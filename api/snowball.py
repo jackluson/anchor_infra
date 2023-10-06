@@ -16,8 +16,8 @@ from .base import BaseApier
 from ..utils.driver import get_request_header_key
 
 
-def create_snowball_cache(*, expire=3600, end=EndMode.Day):
-    return create_cache(module="snowball", expire=3600, end=EndMode.Day)
+def create_snowball_cache(*args, **kwargs):
+    return create_cache(module="snowball", *args, **kwargs)
 
 
 class ApiSnowBall(BaseApier):

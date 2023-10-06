@@ -8,7 +8,7 @@ from ..utils.file import write_fund_json_data
 
 
 def create_eastmoney_cache(*, expire=3600, end=EndMode.Day):
-    return create_cache(module="eastmoney", expire=3600, end=EndMode.Day)
+    return create_cache(module="eastmoney", expire=expire, end=end)
 
 
 class ApiEastMoney(BaseApier):
