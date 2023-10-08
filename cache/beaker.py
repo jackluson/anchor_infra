@@ -36,13 +36,13 @@ def create_cache(*, module, type="file", expire=3600, end: EndMode = None, use_i
         @wraps(func)
         def wrapper(*args, **kwargs):
             @cache.cache(module, type=type, expire=persistence_seconds)
-            def func_dummy(*innerArgs, **kwargs):
+            def func_dummy(*_args, **_kwargs):
                 return func(*args, **kwargs)
             # 第一个参数是self，排除
             temp_args = args[1:] if use_in_class else args
             if is_before_clear:
-                cache.invalidate(func_dummy, module, *temp_args, **kwargs, type=type)
-            return func_dummy(*temp_args, **kwargs)
+                cache.invalidate(func_dummy, module, *temp_args, *kwargs.items(), type="file")
+            return func_dummy(*temp_args, *kwargs.items())
         return wrapper
     # return cache.cache('temp', type='file', expire=10)
     return _cache_fn

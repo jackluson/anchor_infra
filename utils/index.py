@@ -12,7 +12,8 @@ from functools import wraps
 import re
 from infra.logger.logger import Logger
 
-logger = Logger(file='log/timer.log', show_stream=False)
+                 
+logger = Logger(file='log/timer.log', logger_format=" [%(asctime)s]  %(levelname)s %(message)s",  show_stream=False)
 
 
 def timeit(func):
