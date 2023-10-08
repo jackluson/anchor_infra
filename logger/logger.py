@@ -7,6 +7,7 @@ Author: luxuemin2108@gmail.com
 Copyright (c) 2023 Camel Lu
 '''
 import logging
+import os
 
 
 class Logger(logging.Logger):
@@ -22,6 +23,7 @@ class Logger(logging.Logger):
         self.setLevel(logger_level)
         fmt = logging.Formatter(logger_format)
         if file:
+            os.makedirs(os.path.dirname(file), exist_ok=True)  
             file_handler = logging.FileHandler(file)
             # 4、设置 file_handler 级别
             file_handler.setLevel(logger_level)
