@@ -2,14 +2,13 @@ import time
 import json
 import os
 import random
-from infra.cache.beaker import create_cache, EndMode
+from infra.cache.beaker import create_cache, EndMode, cache
 from .base import BaseApier
 from ..utils.file import write_fund_json_data
 
 
-def create_eastmoney_cache(*, expire=3600, end=EndMode.Day):
-    return create_cache(module="eastmoney", expire=expire, end=end)
-
+def create_eastmoney_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
+    return create_cache(module="eastmoney", expire=expire, end=end, is_before_clear=is_before_clear)
 
 class ApiEastMoney(BaseApier):
     def __init__(self):
@@ -42,6 +41,7 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
+    @create_eastmoney_cache(expire=60 * 5, end=None)
     def get_notices_info(self, *, code, page_size, page_index, ann_type):
         timestamp = int(time.time() * 1000)
         callback = "jQuery112308272385073717725_" + str(timestamp)
@@ -66,6 +66,7 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
+    @create_eastmoney_cache()
     def get_notice_detail(self, *, art_code):
         timestamp = int(time.time() * 1000)
         # jQuery112302017701812703181_1688868121679
@@ -89,6 +90,7 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
+    @create_eastmoney_cache()
     def get_all_stocks_with_st(self, *, page_index=1, page_size=200):
         cur_date = time.strftime(
             "%Y-%m-%d", time.localtime(time.time()))
@@ -152,3 +154,5 @@ class ApiEastMoney(BaseApier):
                 print('请求异常', res)
         except:
             raise ('中断')
+
+
