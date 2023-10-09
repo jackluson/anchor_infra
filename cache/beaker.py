@@ -41,8 +41,8 @@ def create_cache(*, module, type="file", expire=3600, end: EndMode = None, use_i
             # 第一个参数是self，排除
             temp_args = args[1:] if use_in_class else args
             if is_before_clear:
-                cache.invalidate(func_dummy, module, *temp_args, *kwargs.items(), type="file")
-            return func_dummy(*temp_args, *kwargs.items())
+                cache.invalidate(func_dummy, module, func.__name__, *temp_args, *kwargs.items(), type="file")
+            return func_dummy(func.__name__, *temp_args, *kwargs.items())
         return wrapper
     # return cache.cache('temp', type='file', expire=10)
     return _cache_fn
