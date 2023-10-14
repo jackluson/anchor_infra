@@ -15,8 +15,8 @@ from .base import BaseApier
 from ..utils.file import write_fund_json_data
 
 
-def create_jisilu_cache(*, expire=3600, end=EndMode.Day):
-    return create_cache(module="jisilu", expire=3600, end=EndMode.Day)
+def create_jisilu_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
+    return create_cache(module="jisilu", expire=expire, end=end, is_before_clear=is_before_clear)
 
 
 class ApiJiSiLu(BaseApier):

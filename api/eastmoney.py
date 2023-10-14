@@ -10,6 +10,7 @@ from ..utils.file import write_fund_json_data
 def create_eastmoney_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
     return create_cache(module="eastmoney", expire=expire, end=end, is_before_clear=is_before_clear)
 
+
 class ApiEastMoney(BaseApier):
     def __init__(self):
         super().__init__()
@@ -92,15 +93,15 @@ class ApiEastMoney(BaseApier):
 
     @create_eastmoney_cache()
     def get_all_stocks_with_st(self, *, page_index=1, page_size=200):
-        cur_date = time.strftime(
-            "%Y-%m-%d", time.localtime(time.time()))
-        file_dir = os.getcwd() + '/data/json/st/'
-        filename = 'st_' + cur_date + '.json'
-        is_exist = os.path.exists(file_dir + filename)
-        if is_exist:
-            with open(file_dir + filename, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-                return data
+        # cur_date = time.strftime(
+        #     "%Y-%m-%d", time.localtime(time.time()))
+        # file_dir = os.getcwd() + '/data/json/st/'
+        # filename = 'st_' + cur_date + '.json'
+        # is_exist = os.path.exists(file_dir + filename)
+        # if is_exist:
+        #     with open(file_dir + filename, 'r', encoding='utf-8') as f:
+        #         data = json.load(f)
+        #         return data
         timestamp = int(time.time() * 1000)
         callback = "jQuery112405829056173474523_" + str(timestamp)
 
@@ -114,8 +115,8 @@ class ApiEastMoney(BaseApier):
             if res.status_code == 200:
                 data_text = res.text.replace(callback, '')[1:-2]
                 res_json = json.loads(data_text)
-                write_fund_json_data(res_json.get(
-                    'data').get('diff'), filename, file_dir)
+                # write_fund_json_data(res_json.get(
+                #     'data').get('diff'), filename, file_dir)
                 return res_json.get('data').get('diff')
             else:
                 print('请求异常', res)
@@ -124,6 +125,7 @@ class ApiEastMoney(BaseApier):
 
     @create_eastmoney_cache(end=EndMode.Month)
     def get_yzxdr(self, code: str, *, end_date='2023-06-30', retry=True):
+        # TODO: end_date 处理
         timestamp = int(time.time() * 1000)
         callback = "jQuery11230688981214770831_" + str(timestamp)
         params = {
@@ -154,5 +156,3 @@ class ApiEastMoney(BaseApier):
                 print('请求异常', res)
         except:
             raise ('中断')
-
-
