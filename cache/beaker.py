@@ -1,3 +1,5 @@
+import os
+import inspect
 from enum import Enum
 from datetime import datetime
 from beaker.cache import CacheManager
@@ -46,3 +48,9 @@ def create_cache(*, module, type="file", expire=3600, end: EndMode = None, use_i
         return wrapper
     # return cache.cache('temp', type='file', expire=10)
     return _cache_fn
+
+def create_cache_based_stack(*, expire=3600, end=EndMode.Day, is_before_clear=False):
+    frame = inspect.stack()[1]
+    module = inspect.getmodule(frame[0])
+    filename = os.path.basename(module.__file__)
+    return create_cache(module=filename, expire=expire, end=end, is_before_clear=is_before_clear)
