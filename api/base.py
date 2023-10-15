@@ -16,6 +16,7 @@ import requests
 from functools import wraps
 from infra.cache.beaker import cache, create_cache, EndMode
 from infra.utils.index import timeit
+from infra.logger.logger import Logger
 from ..utils.file import write_fund_json_data
 
 from requests.adapters import HTTPAdapter
@@ -24,7 +25,7 @@ from urllib3.util.retry import Retry
 
 class BaseApier:
     headers = dict()
-
+    logger = Logger(file='log/api.log', logger_format=" [%(asctime)s]  %(levelname)s %(message)s",  show_stream=False)
     session: requests.Session = None
     _logger: logging = None
 
@@ -97,6 +98,21 @@ class BaseApier:
                 return response.json()
         except:
             raise ('请求异常')
+
+    def get_html(self, url, **kwargs):
+        headers = {
+            **self.headers,
+           'Content-Type': 'text/html; charset=utf-8'
+        }
+        res = self.session.get(url, headers=headers, **kwargs)
+        try:
+            if res.status_code == 200:
+                return res.text
+            else:
+                self.logger.exception(res)
+        except Exception as e:
+            self.logger.exception(res)
+            raise(e)
 
     def post(self, url, **kwargs):
         merge_header = {
