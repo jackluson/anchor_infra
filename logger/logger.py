@@ -8,7 +8,7 @@ Copyright (c) 2023 Camel Lu
 '''
 import logging
 import os
-
+from pythonjsonlogger import jsonlogger
 
 class Logger(logging.Logger):
 
@@ -22,13 +22,15 @@ class Logger(logging.Logger):
         super().__init__(name)
         self.setLevel(logger_level)
         fmt = logging.Formatter(logger_format)
+        # logHandler.setFormatter(formatter)
         if file:
             os.makedirs(os.path.dirname(file), exist_ok=True)  
             file_handler = logging.FileHandler(file)
             # 4、设置 file_handler 级别
             file_handler.setLevel(logger_level)
+            formatter = jsonlogger.JsonFormatter(logger_format)
             # 6、设置handler格式
-            file_handler.setFormatter(fmt)
+            file_handler.setFormatter(formatter)
             # 7、添加handler
             self.addHandler(file_handler)
         if show_stream:
@@ -39,3 +41,5 @@ class Logger(logging.Logger):
             stream_handler.setFormatter(fmt)
             # 7、添加handler
             self.addHandler(stream_handler)
+
+error_logger = Logger(file='log/error.log', show_stream=True, logger_level=logging.ERROR)
