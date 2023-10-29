@@ -12,7 +12,7 @@ import os
 import dateutil
 
 from infra.cache.beaker import create_cache, EndMode
-from infra.utils.index import timeit_with_log
+from infra.utils.index import timeit_with_log, get_symbol_by_code
 from .base import BaseApier
 from ..utils.driver import get_request_header_key
 
@@ -110,6 +110,14 @@ class ApiSnowBall(BaseApier):
 
         url = f"{self.base_url}/v5/stock/chart/kline.json"
         data = self.get(url, params=params).get('data')
+        return data
+    
+    @create_snowball_cache(end=EndMode.Day, is_before_clear=False)
+    def get_stock_quote(self, code):
+        symbol = get_symbol_by_code(code)
+        url = "https://stock.xueqiu.com/v5/stock/quote.json?symbol={0}&extend=detail".format(
+                symbol)
+        data = self.get(url).get('data')
         return data
 
     def get_lastest_kline_info(self, *, symbol: str, date=datetime.now().strftime('%Y-%m-%d %H:%M:%S')):

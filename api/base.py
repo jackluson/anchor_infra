@@ -16,7 +16,8 @@ import requests
 from functools import wraps
 from infra.cache.beaker import cache, create_cache, EndMode
 from infra.utils.index import timeit
-from infra.logger.logger import Logger
+from infra.logger.logger import error_logger, Logger
+from services.stock.app import toJSON
 from ..utils.file import write_fund_json_data
 
 from requests.adapters import HTTPAdapter
@@ -90,41 +91,50 @@ class BaseApier:
         return headers
 
     def get(self, url, **kwargs):
-        # self.logger.info(f'host:{self.__dict__.get("base_url")}')
-        # self.logger.error(f'host:{self.__dict__.get("base_url")}')
-        response = self.session.get(url, headers=self.headers, **kwargs)
         try:
+            response = self.session.get(url, headers=self.headers, **kwargs)
             if response.status_code == 200:
                 return response.json()
-        except:
-            raise ('请求异常')
+        except BaseException as e:
+            error_logger.error(f'error url:{url}')
+            if len(kwargs.keys()):
+                error_logger.error(kwargs)
+            error_logger.exception(e)
+            raise Exception('fetch error', url, kwargs)
 
     def get_html(self, url, **kwargs):
         headers = {
             **self.headers,
            'Content-Type': 'text/html; charset=utf-8'
         }
-        res = self.session.get(url, headers=headers, **kwargs)
         try:
+            res = self.session.get(url, headers=headers, **kwargs)
             if res.status_code == 200:
                 return res.text
             else:
                 self.logger.exception(res)
-        except Exception as e:
-            self.logger.exception(res)
-            raise(e)
+        except BaseException as e:
+            error_logger.error(f'error url:{url}')
+            if len(kwargs.keys()):
+                error_logger.error(kwargs)
+            error_logger.exception(e)
+            raise Exception('fetch error', url, kwargs)
 
     def post(self, url, **kwargs):
         merge_header = {
             **self.headers,
             'Content-Type': 'application/x-www-form-urlencoded'
         }
-        response = self.session.post(url, headers=merge_header, **kwargs)
         try:
+            response = self.session.post(url, headers=merge_header, **kwargs)
             if response.status_code == 200:
                 return response.json()
-        except:
-            raise ('请求异常')
+        except BaseException as e:
+            error_logger.error(f'error url:{url}')
+            if len(kwargs.keys()):
+                error_logger.error(kwargs)
+            error_logger.exception(e)
+            raise Exception('fetch error', url, kwargs)
 
     @staticmethod
     def Log(arg):
