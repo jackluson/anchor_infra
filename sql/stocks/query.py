@@ -29,7 +29,7 @@ class StockQuery(BaseSqlModel):
             query_stock_sql = "SELECT stock_code, stock_name, industry_name_first, industry_name_second, industry_name_third FROM stock_industry WHERE delist_status NOT IN (1) ORDER BY industry_code_first DESC, industry_code_second DESC, industry_code_third DESC"
             self.dict_cursor.execute(query_stock_sql)
         else:
-            query_stock_sql = "SELECT stock_code FROM stock_industry as a WHERE a.stock_code NOT IN ( SELECT b.`code` FROM stock_daily_info AS b WHERE b.`timestamp` = %s ) ORDER BY industry_code_first DESC, industry_code_second DESC, industry_code_third DESC"
+            query_stock_sql = "SELECT stock_code FROM stock_industry as a WHERE a.delist_status = 0 and a.stock_code NOT IN ( SELECT b.`code` FROM stock_daily_info AS b WHERE b.`timestamp` = %s ) ORDER BY industry_code_first DESC, industry_code_second DESC, industry_code_third DESC"
             self.dict_cursor.execute(query_stock_sql, [date])
 
         results = self.dict_cursor.fetchall()
@@ -70,3 +70,4 @@ LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.`stock_cod
 
         results = self.dict_cursor.fetchall()
         return results
+
