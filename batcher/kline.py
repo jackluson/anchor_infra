@@ -118,7 +118,7 @@ class KlineBatcher:
             },
             {
                 'key': 'recent_day_60_increase',
-                'name': '近30日涨幅',
+                'name': '近60日涨幅',
                 'begin': begin_recent_days_60.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
