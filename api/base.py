@@ -17,7 +17,6 @@ from functools import wraps
 from infra.cache.beaker import cache, create_cache, EndMode
 from infra.utils.index import timeit
 from infra.logger.logger import error_logger, Logger
-from services.stock.app import toJSON
 from ..utils.file import write_fund_json_data
 
 from requests.adapters import HTTPAdapter
