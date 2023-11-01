@@ -140,7 +140,9 @@ class KlineBatcher:
             if index % 50 == 0:
                 print('progress:', index)
             code = source_item.get('code')
-            symbol = source_item.get('market').upper() + code
+            market = source_item.get('market') if source_item.get('market')  else source_item.get(
+                'exchange')
+            symbol = market.upper() + code
             name = source_item.get('name')
             kline = Kline(symbol, name, {
                 # 'load_local': False
