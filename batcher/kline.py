@@ -118,7 +118,7 @@ class KlineBatcher:
             },
             {
                 'key': 'recent_day_60_increase',
-                'name': '近30日涨幅',
+                'name': '近60日涨幅',
                 'begin': begin_recent_days_60.strftime('%Y-%m-%d'),
                 'end': target_date,
             },
@@ -140,7 +140,9 @@ class KlineBatcher:
             if index % 50 == 0:
                 print('progress:', index)
             code = source_item.get('code')
-            symbol = source_item.get('market').upper() + code
+            market = source_item.get('market') if source_item.get('market')  else source_item.get(
+                'exchange')
+            symbol = market.upper() + code
             name = source_item.get('name')
             kline = Kline(symbol, name, {
                 # 'load_local': False
