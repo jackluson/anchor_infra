@@ -43,3 +43,5 @@ class Logger(logging.Logger):
             self.addHandler(stream_handler)
 
 error_logger = Logger(file='log/error.log', show_stream=True, logger_level=logging.ERROR)
+
+logger = Logger(file='log/log.log',show_stream=True)
