@@ -112,7 +112,7 @@ class ApiSnowBall(BaseApier):
         data = self.get(url, params=params).get('data')
         return data
     
-    @create_snowball_cache(end=EndMode.Day, is_before_clear=False)
+    # @create_snowball_cache(end=EndMode.Day, is_before_clear=False)
     def get_stock_quote(self, code):
         symbol = get_symbol_by_code(code)
         url = "https://stock.xueqiu.com/v5/stock/quote.json?symbol={0}&extend=detail".format(
