@@ -81,3 +81,10 @@ LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.`stock_cod
 
         results = self.dict_cursor.fetchall()
         return results
+    
+    def query_stock_pe_pb(self, date=None):
+        query_stock_sql = "SELECT * FROM stock_pe_pb as a LEFT JOIN stock_profile as b ON b.stock_code = a.`code` WHERE a.`date` = %s"
+        self.dict_cursor.execute(query_stock_sql, [date])
+
+        results = self.dict_cursor.fetchall()
+        return results
