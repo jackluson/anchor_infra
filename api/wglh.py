@@ -56,6 +56,10 @@ class ApiWglh(BaseApier):
         json_string = json_string.replace('\'', '\"')
         value_levels = json.loads(json_string)
         return {
+            'pb': {
+                **value_levels['pb'],
+                'value': pb_value,
+            },
             'pe': {
                 **value_levels['pe'],
                 'value': pe_value,
@@ -63,9 +67,5 @@ class ApiWglh(BaseApier):
             'pe_koufei': {
                  **value_levels['pe_koufei'],
                 'value': pe_kf_value,
-            },
-            'pb': {
-                **value_levels['pe'],
-                'value': pb_value,
             },
         }

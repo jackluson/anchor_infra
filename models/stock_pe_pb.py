@@ -74,6 +74,8 @@ class Stock_PE_PB(ORM_Base, Model):
 
     @staticmethod
     def bulk_save(data_list: list, ignore_key=[]):
+        if data_list is None or len(data_list) == 0:
+            return
         """批量保存(新增或者更新, id只能是新增)
 
         Args:
