@@ -23,6 +23,12 @@ class StockQuery(BaseSqlModel):
         self.cursor.execute(query_industry_sql)
         results = self.cursor.fetchall()
         return results
+# SELECT * FROM shen_wan_industry as a WHERE a.industry_type = '1' AND a.p_industry_code = 'S22' ORDER BY a.p_industry_code
+    def query_shen_wan_industry(self, type=0, p_industry_code='S'):
+        query_industry_sql = f"SELECT * FROM shen_wan_industry as a WHERE a.industry_type = '%s' AND a.p_industry_code = %s ORDER BY a.p_industry_code"
+        self.dict_cursor.execute(query_industry_sql, [type, p_industry_code])
+        results = self.dict_cursor.fetchall()
+        return results
 
     def query_all_stock(self, date=None, *, exclude_table = 'stock_daily_info', date_key = 'timestamp'):
         if date == None:
@@ -76,7 +82,7 @@ LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.`stock_cod
             query_stock_sql = "SELECT * FROM stock_daily_info as a LEFT JOIN stock_profile as b ON b.stock_code = a.`code`"
             self.dict_cursor.execute(query_stock_sql)
         else:
-            query_stock_sql = "SELECT * FROM stock_daily_info as a LEFT JOIN stock_profile as b ON b.stock_code = a.`code` WHERE a.status=1 and a.`timestamp` = %s"
+            query_stock_sql = "SELECT * FROM stock_daily_info as a LEFT JOIN stock_profile as b ON b.stock_code = a.`code` LEFT JOIN stock_industry as c ON c.stock_code = a.code WHERE a.status=1 and a.`timestamp` = %s"
             self.dict_cursor.execute(query_stock_sql, [date])
 
         results = self.dict_cursor.fetchall()
