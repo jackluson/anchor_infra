@@ -94,3 +94,9 @@ LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.`stock_cod
 
         results = self.dict_cursor.fetchall()
         return results
+
+    def query_all_stock_belong_provinces(self):
+        query_sql = "SELECT a.provincial_name, COUNT(*) as count FROM stock_profile as a GROUP BY a.provincial_name ORDER BY COUNT(*) DESC"
+        self.dict_cursor.execute(query_sql)
+        results = self.dict_cursor.fetchall()
+        return results
