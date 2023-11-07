@@ -32,6 +32,8 @@ class ApiWglh(BaseApier):
 
     def get_pe_pb_levels_from_history(self, *, symbol ):
         html = self.get_history_html(symbol = symbol)
+        if html == None:
+            return None
         soup = BeautifulSoup(html, "lxml")
         fmt_items = soup.find_all('div', {'class': "fdm"})[0].find_all('div', {'class': "item"})
         pb_value = None
