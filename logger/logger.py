@@ -28,7 +28,9 @@ class Logger(logging.Logger):
             file_handler = logging.FileHandler(file)
             # 4、设置 file_handler 级别
             file_handler.setLevel(logger_level)
-            formatter = jsonlogger.JsonFormatter(logger_format)
+            datefmt="%Y-%m-%dT%H:%M:%S"
+            formatter = jsonlogger.JsonFormatter(fmt=logger_format, datefmt=datefmt,json_ensure_ascii=False)  
+            # formatter = jsonlogger.JsonFormatter(logger_format)
             # 6、设置handler格式
             file_handler.setFormatter(formatter)
             # 7、添加handler

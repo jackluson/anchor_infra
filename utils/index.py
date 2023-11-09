@@ -12,7 +12,7 @@ from functools import wraps
 import re
 from infra.logger.logger import Logger
 
-logger = Logger(file='log/timer.log', logger_format=" [%(asctime)s]  %(levelname)s %(message)s",  show_stream=False)
+timer_logger = Logger(file='log/timer.log', logger_format=" [%(asctime)s]  %(levelname)s %(message)s",  show_stream=False)
 
 def timeit(func):
     @wraps(func)
@@ -36,7 +36,7 @@ def timeit_with_log(*, is_log=True):
             end_time = time.perf_counter()
             total_time = end_time - start_time
             if is_log:
-                logger.info(
+                timer_logger.info(
                     f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds')
                 # print(
                 #     f'Function {func.__name__} {args} {kwargs} Took {total_time:.4f} seconds\n')
