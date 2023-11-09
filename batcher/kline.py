@@ -140,9 +140,9 @@ class KlineBatcher:
             if index % 50 == 0:
                 print('progress:', index)
             code = source_item.get('code')
-            market = source_item.get('market') if source_item.get('market')  else source_item.get(
-                'exchange')
-            symbol = market.upper() + code
+            market = source_item.get('market', source_item.get(
+                'exchange'))
+            symbol = source_item.get('symbol', market.upper() + code) 
             name = source_item.get('name')
             kline = Kline(symbol, name, {
                 # 'load_local': False
@@ -152,7 +152,7 @@ class KlineBatcher:
             kline.set_kline_data()
             kline.df_kline['name'] = name
             kline.df_kline['code'] = code
-            kline.df_kline['market'] = source_item.get('market')
+            kline.df_kline['market'] = market
             kline.df_kline['symbol'] = symbol
             if len(kline.df_kline) == 0:
                 print(f'code:{code}, 没有kline数据')
