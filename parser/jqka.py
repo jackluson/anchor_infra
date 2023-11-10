@@ -12,6 +12,7 @@ import pandas as pd
 
 import time
 from infra.parser.base import BaseParser
+from infra.utils.index import get_symbol_by_code
 
 
 def to_number(s):
@@ -46,12 +47,9 @@ class JqkaParser(BaseParser):
         html = response.text
         return html
 
-    def get_holder_list(self, code, market):
-        if market.upper() == 'SZ':
-            market = '32'
-        else:
-            market = '16'
-        ths_detail_url = f"{self.origin}/{market}/{code}/detail.html"
+    def get_holder_list(self, code):
+        market_code = '32' if get_symbol_by_code(code).upper()[:2] == 'SZ' else 16
+        ths_detail_url = f"{self.origin}/{market_code}/{code}/detail.html"
 
         html = self.get_source(ths_detail_url)
         soup = BeautifulSoup(html, "html.parser")
