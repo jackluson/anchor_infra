@@ -15,11 +15,11 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import registry
 from ..config.env import env_db_host, env_db_name, env_db_user, env_db_password, env_db_port
 
-SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + env_db_user + ':'+ env_db_password +'@'+ env_db_host + ':' + env_db_port + '/' + env_db_name
 
 _global_engine = None
 
 def get_engine(**args):
+    SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://' + env_db_user + ':'+ env_db_password +'@'+ env_db_host + ':' + env_db_port + '/' + env_db_name
     global _global_engine 
     if _global_engine == None:
         _global_engine = create_engine(SQLALCHEMY_DATABASE_URI, future=True, **args)
