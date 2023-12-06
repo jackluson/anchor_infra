@@ -17,8 +17,9 @@ def get_request_header_key(entry_url, host, request_header_key, mime_type="json"
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')
     capabilities["goog:loggingPrefs"] = {"performance": "ALL"}
-    driver = webdriver.Chrome(options=chrome_options,
-                              desired_capabilities=capabilities,)
+    chrome_options.binary_location = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    chrome_driver_binary = "/usr/local/bin/chromedriver"
+    driver = webdriver.Chrome(chrome_driver_binary, options=chrome_options, desired_capabilities=capabilities)
     driver.get(entry_url)
     logs_raw = driver.get_log("performance")
     logs = [json.loads(lr["message"])["message"] for lr in logs_raw]

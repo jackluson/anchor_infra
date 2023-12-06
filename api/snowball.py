@@ -20,6 +20,8 @@ from ..utils.driver import get_request_header_key
 def create_snowball_cache(*args, **kwargs):
     return create_cache(module="snowball", *args, **kwargs)
 
+_global_xue_qiu_cookie = None
+_global_api_snowbal = None
 
 class ApiSnowBall(BaseApier):
     xue_qiu_cookie = None
@@ -29,13 +31,21 @@ class ApiSnowBall(BaseApier):
         host = 'xueqiu.com'
         self.base_url = "https://stock.xueqiu.com"
         super().__init__()
-        self.xue_qiu_cookie = os.getenv('xue_qiu_cookie')
-        if need_login and not self.xue_qiu_cookie:
-            raise Exception('need login')
-        elif not self.xue_qiu_cookie:
+        global _global_xue_qiu_cookie
+        if need_login:
+            logined_xue_qiu_cookie = os.getenv('xue_qiu_cookie')
+            self.xue_qiu_cookie = logined_xue_qiu_cookie
+        elif not _global_xue_qiu_cookie:
+            # 目前只能获取没有登录cookie
             xue_qiu_cookie = get_request_header_key(
                 origin, host, 'Cookie')
             self.xue_qiu_cookie = xue_qiu_cookie
+            _global_xue_qiu_cookie = xue_qiu_cookie
+            print("_global_xue_qiu_cookie", _global_xue_qiu_cookie)
+        else:
+            self.xue_qiu_cookie = _global_xue_qiu_cookie
+        if need_login and not self.xue_qiu_cookie:
+            raise Exception('need login')
         self.set_client_headers()
 
     def get_portfolio_list(self, *, symbol=None, system=True):
@@ -148,3 +158,10 @@ class ApiSnowBall(BaseApier):
         data = self.get(url, params=params).get('data')
         # self.logger.info('data:', data)
         return data
+
+
+def create_single_api_snowball(*args, **kargs):
+    global _global_api_snowbal
+    if not _global_api_snowbal:
+        _global_api_snowbal = ApiSnowBall(*args, **kargs)
+    return _global_api_snowbal

@@ -10,6 +10,7 @@ import logging
 import os
 import json
 from datetime import datetime
+from fake_useragent import UserAgent
 import pandas as pd
 from dotenv import load_dotenv
 import requests
@@ -27,7 +28,6 @@ class BaseApier:
     headers = dict()
     logger = Logger(file='log/api.log', logger_format=" [%(asctime)s]  %(levelname)s %(message)s",  show_stream=False)
     session: requests.Session = None
-    _logger: logging = None
 
     def __init__(self):
         load_dotenv()
@@ -38,50 +38,13 @@ class BaseApier:
         session.mount('https://', adapter)
         self.session = session
 
-    def init_loger(self):
-        # 1、创建一个logger
-        logger = logging.getLogger('apilogger')
-        logger.setLevel(logging.DEBUG)
-
-        # 2、创建一个handler，用于写入日志文件
-        fh = logging.FileHandler('log/api.log')
-        fh.setLevel(logging.DEBUG)
-
-        # # 再创建一个handler，用于输出到控制台
-        # ch = logging.StreamHandler()
-        # ch.setLevel(logging.DEBUG)
-
-        # 3、定义handler的输出格式（formatter）
-        formatter = logging.Formatter(
-            '%(levelname)s - %(asctime)s - %(name)s -  %(filename)s[line:%(lineno)d] - %(message)s')
-
-        # 4、给handler添加formatter
-        fh.setFormatter(formatter)
-        # ch.setFormatter(formatter)
-        if not logger.handlers:
-            # 5、给logger添加handler
-            logger.addHandler(fh)
-        self._logger = logger
-        # logger.addHandler(ch)
-        return logger
-
-    @property
-    def logger(self) -> logging:
-        if self._logger == None:
-            self.init_loger()
-            return self._logger
-        else:
-            self._logger
-
-    @classmethod
-    def GetLogger(cls):
-        return cls().logger
-
     def set_client_headers(self, *,  cookie_env_key="xue_qiu_cookie", referer="https://xueqiu.com", origin=None):
         cookie = self.__dict__.get(cookie_env_key)
+        ua = UserAgent()
+        
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36',
+            'User-Agent': ua.random.lstrip(), # 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36',
             'Origin': origin if origin else referer,
             'Referer': referer if referer else self.referer,
             'Cookie': cookie,
@@ -94,6 +57,8 @@ class BaseApier:
             response = self.session.get(url, headers=self.headers, **kwargs)
             if response.status_code == 200:
                 return response.json()
+            else:
+                self.logger.exception(response)
         except BaseException as e:
             error_logger.error(f'error url:{url}')
             if len(kwargs.keys()):
@@ -176,9 +141,6 @@ class BaseApier:
                         else:
                             return fn()
                     except Exception as e:
-                        # BaseApier.init_loger().critical(e, exc_info=True)
-                        logger = BaseApier.GetLogger()
-                        logger.exception(e)
                         return fn()
                 else:
                     return func(*args, **kwargs)
