@@ -43,7 +43,7 @@ class StockQuery(BaseSqlModel):
 
     def query_stock_with_st(self):
         query_stock_sql = "SELECT t.stock_code, t.stock_name, t.industry_name_third, t1.org_name, t1.actual_controller, t1.classi_name, t1.main_operation_business FROM stock_industry as t \
-LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.delist_status NOT IN (1) AND t.stock_name LIKE '%ST%' AND t.stock_name NOT LIKE '%B%' AND t.delist IS NULL"
+LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.stock_name LIKE '%ST%' AND t.stock_name NOT LIKE '%B%' AND t.delist IS NULL"
         self.dict_cursor.execute(query_stock_sql)
         results = self.dict_cursor.fetchall()
         return results
