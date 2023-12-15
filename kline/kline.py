@@ -9,7 +9,7 @@ Copyright (c) 2023 Camel Lu
 
 import os
 import pandas as pd
-from infra.api.snowball import ApiSnowBall
+from infra.api.snowball import ApiSnowBall, create_single_api_snowball
 import logging
 from datetime import datetime
 pd.options.mode.chained_assignment = None
@@ -26,9 +26,11 @@ class Kline:
     save_local = True
     today = datetime.now().strftime("%Y-%m-%d")
     save_dir = f'./data/csv/{datetime.now().strftime("%Y-%m-%d")}/'
-
+    api: ApiSnowBall = None
     def __init__(self, symbol, name, config=dict()):
-        self.api = ApiSnowBall()
+
+        # self.api = ApiSnowBall()
+        self.api = create_single_api_snowball()
         self.symbol = symbol
         self.name = name
         logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',

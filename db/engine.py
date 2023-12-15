@@ -29,9 +29,9 @@ _global_base = None
 
 def get_orm_base():
     global _global_base
-    mapper_registry = registry()
-    Base = mapper_registry.generate_base()
     if _global_base == None:
+        mapper_registry = registry()
+        Base = mapper_registry.generate_base()
         _global_base = Base
     return _global_base
 
