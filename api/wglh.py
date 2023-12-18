@@ -8,10 +8,8 @@ Author: luxuemin2108@gmail.com
 Copyright (c) 2023 Camel Lu
 '''
 
-import sqlalchemy
 import time
 import json
-from infra.cache.beaker import create_cache_based_stack
 from .base import BaseApier
 from bs4 import BeautifulSoup
 

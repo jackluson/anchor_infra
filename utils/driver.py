@@ -9,10 +9,9 @@ Copyright (c) 2023 Camel Lu
 import json
 import logging
 
-from selenium import webdriver
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
 def get_request_header_key(entry_url, host, request_header_key, mime_type="json"):
+    from selenium import webdriver
+    from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
     capabilities = DesiredCapabilities.CHROME
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--headless')

@@ -10,13 +10,13 @@ import time
 import json
 import requests
 import os
-from infra.cache.beaker import create_cache, EndMode
+# from infra.cache.beaker import create_cache, EndMode
 from .base import BaseApier
 from ..utils.file import write_fund_json_data
 
 
-def create_jisilu_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
-    return create_cache(module="jisilu", expire=expire, end=end, is_before_clear=is_before_clear)
+# def create_jisilu_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
+#     return create_cache(module="jisilu", expire=expire, end=end, is_before_clear=is_before_clear)
 
 
 class ApiJiSiLu(BaseApier):
@@ -40,7 +40,7 @@ class ApiJiSiLu(BaseApier):
 
     # @BaseApier.DiskCache(module="jisilu", expire=3600, end=EndMode.Day)
     # @create_cache(module="jisilu", expire=3600, end=EndMode.Day)
-    @create_jisilu_cache(expire=3600, end=EndMode.Day)
+    # @create_jisilu_cache(expire=3600, end=EndMode.Day)
     def get_pre_list(self, *, history="N"):
         url = f"{self.origin}/webapi/cb/pre/?history={history}"
         data = self.get(url).get('data')

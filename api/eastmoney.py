@@ -2,13 +2,12 @@ import time
 import json
 import os
 import random
-from infra.cache.beaker import create_cache, EndMode, cache
+# from infra.cache.beaker import create_cache, EndMode
 from .base import BaseApier
-from ..utils.file import write_fund_json_data
 
 
-def create_eastmoney_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
-    return create_cache(module="eastmoney", expire=expire, end=end, is_before_clear=is_before_clear)
+# def create_eastmoney_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
+#     return create_cache(module="eastmoney", expire=expire, end=end, is_before_clear=is_before_clear)
 
 
 class ApiEastMoney(BaseApier):
@@ -42,7 +41,7 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
-    @create_eastmoney_cache(expire=60 * 5, end=None)
+    # @create_eastmoney_cache(expire=60 * 5, end=None)
     def get_notices_info(self, *, code, page_size, page_index, ann_type):
         timestamp = int(time.time() * 1000)
         callback = "jQuery112308272385073717725_" + str(timestamp)
@@ -67,7 +66,7 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
-    @create_eastmoney_cache()
+    # @create_eastmoney_cache()
     def get_notice_detail(self, *, art_code):
         timestamp = int(time.time() * 1000)
         # jQuery112302017701812703181_1688868121679
@@ -91,7 +90,7 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
-    @create_eastmoney_cache()
+    # @create_eastmoney_cache()
     def get_all_stocks_with_st(self, *, page_index=1, page_size=200):
         # cur_date = time.strftime(
         #     "%Y-%m-%d", time.localtime(time.time()))
@@ -123,8 +122,8 @@ class ApiEastMoney(BaseApier):
         except:
             raise ('中断')
 
-    @create_eastmoney_cache(end=EndMode.Month)
-    def get_yzxdr(self, code: str, *, end_date='2023-06-30', retry=True):
+    # @create_eastmoney_cache(end=EndMode.Month)
+    def get_yzxdr(self, code: str, *, end_date='2023-09-30', retry=True):
         # TODO: end_date 处理
         timestamp = int(time.time() * 1000)
         callback = "jQuery11230688981214770831_" + str(timestamp)
@@ -150,7 +149,7 @@ class ApiEastMoney(BaseApier):
                     return result.get('data')
                 else:
                     if retry:
-                        return self.get_yzxdr(code, end_date='2023-03-31', retry=False)
+                        return self.get_yzxdr(code, end_date='2023-06-30', retry=False)
                     return []
             else:
                 print('请求异常', res)

@@ -11,14 +11,14 @@ from datetime import datetime
 import os
 import dateutil
 
-from infra.cache.beaker import create_cache, EndMode
+# from infra.cache.beaker import create_cache, EndMode
 from infra.utils.index import timeit_with_log, get_symbol_by_code
 from .base import BaseApier
 from ..utils.driver import get_request_header_key
 
 
-def create_snowball_cache(*args, **kwargs):
-    return create_cache(module="snowball", *args, **kwargs)
+# def create_snowball_cache(*args, **kwargs):
+#     return create_cache(module="snowball", *args, **kwargs)
 
 _global_xue_qiu_cookie = None
 _global_api_snowbal = None
@@ -146,8 +146,8 @@ class ApiSnowBall(BaseApier):
                 info[key] = val
         return info
 
-    # @BaseApier.CacheJSON('/data/json/snowball/top_holders')
-    @create_snowball_cache(end=EndMode.Month)
+    # @BaseApier.CacheJsSON('/data/json/snowball/top_holders')
+    # @create_snowball_cache(end=EndMode.Month)
     def get_top_holders(self, symbol, *, circula=0, **args):
         params = {
             'symbol':  symbol.upper(),

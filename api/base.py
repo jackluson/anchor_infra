@@ -15,7 +15,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import requests
 from functools import wraps
-from infra.cache.beaker import cache, create_cache, EndMode
+# from infra.cache.beaker import cache, create_cache, EndMode
 from infra.utils.index import timeit
 from infra.logger.logger import error_logger, Logger
 from ..utils.file import write_fund_json_data
@@ -147,6 +147,6 @@ class BaseApier:
             return wrapper
         return _log
 
-    @staticmethod
-    def Cache(*args, **kwargs):
-        return create_cache(*args, **kwargs)
+    # @staticmethod
+    # def Cache(*args, **kwargs):
+    #     return create_cache(*args, **kwargs)
