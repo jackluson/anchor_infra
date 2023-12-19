@@ -38,6 +38,15 @@ class BaseApier:
         session.mount('https://', adapter)
         self.session = session
 
+    def get_cookie(self, url):
+        self.get_html(url)
+        cookie_dict = self.session.cookies.get_dict()
+        cookie_str = ''
+        for key, val in cookie_dict.items():
+            cookie_str = f"{cookie_str}{key}={val}; "
+        cookie_str = cookie_str[0:-2]
+        return cookie_str
+
     def set_client_headers(self, *,  cookie_env_key="xue_qiu_cookie", referer="https://xueqiu.com", origin=None):
         cookie = self.__dict__.get(cookie_env_key)
         ua = UserAgent()
@@ -67,12 +76,15 @@ class BaseApier:
             raise Exception('fetch error', url, kwargs)
 
     def get_html(self, url, **kwargs):
+        ua = UserAgent()
         headers = {
+            'User-Agent': ua.random.lstrip(),
             **self.headers,
            'Content-Type': 'text/html; charset=utf-8'
         }
         try:
             res = self.session.get(url, headers=headers, **kwargs)
+            print("本次请求使用的cookie：",res.request.headers.get("Cookie"))
             if res.status_code == 200:
                 return res.text
             else:
