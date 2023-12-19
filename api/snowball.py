@@ -167,7 +167,7 @@ class ApiSnowBall(BaseApier):
         """ 获取公司简介信息
         """
         symbol = get_symbol_by_code(code)
-        url = "https://stock.xueqiu.com/v5/stock/f10/cn/company.json"
+        url = f"{self.base_url}/v5/stock/f10/cn/company.json"
         params = {
             'symbol':  symbol.upper(),
         }
@@ -177,6 +177,13 @@ class ApiSnowBall(BaseApier):
             line = f'该{symbol}--没有简介信息'
             logger.warning(line)
         return info
+    def get_bk_stocks(self, ind_code):
+        url = f"{self.base_url}/v5/stock/forum/stocks.json"
+        params = {
+            'ind_code': ind_code,
+        }
+        data = self.get(url, params=params).get('data')
+        return data
         
 def create_single_api_snowball(*args, **kargs):
     global _global_api_snowbal

@@ -104,3 +104,10 @@ LEFT JOIN stock_profile as t1 ON t.stock_code = t1.stock_code WHERE t.`stock_cod
         self.dict_cursor.execute(query_sql)
         results = self.dict_cursor.fetchall()
         return results
+    
+    def query_stock_name(self, stocks):
+        stocks_str = ",".join(f'"{stock}"' for stock in stocks)
+        query_sql = f"SELECT stock_code, stock_name from stock_industry WHERE stock_code in ({stocks_str})"
+        self.dict_cursor.execute(query_sql)
+        results = self.dict_cursor.fetchall()
+        return results
