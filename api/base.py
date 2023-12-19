@@ -47,15 +47,15 @@ class BaseApier:
         cookie_str = cookie_str[0:-2]
         return cookie_str
 
-    def set_client_headers(self, *,  cookie_env_key="xue_qiu_cookie", referer="https://xueqiu.com", origin=None):
-        cookie = self.__dict__.get(cookie_env_key)
+    def set_client_headers(self, *, cookie_env_key=None, referer, origin=None):
+        cookie = self.__dict__.get(cookie_env_key, os.getenv(cookie_env_key))
+        referer = referer if referer else self.__dict__.get("referer")
         ua = UserAgent()
-        
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
             'User-Agent': ua.random.lstrip(), # 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36',
             'Origin': origin if origin else referer,
-            'Referer': referer if referer else self.referer,
+            'Referer': referer,
             'Cookie': cookie,
         }
         self.headers = headers

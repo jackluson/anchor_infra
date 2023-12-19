@@ -29,6 +29,7 @@ class ApiSnowBall(BaseApier):
 
     def __init__(self, need_login=False):
         origin = 'https://xueqiu.com'
+        referer = 'https://xueqiu.com'
         host = 'xueqiu.com'
         self.base_url = "https://stock.xueqiu.com"
         super().__init__()
@@ -49,7 +50,7 @@ class ApiSnowBall(BaseApier):
             self.xue_qiu_cookie = _global_snowbal_cookie
         if need_login and not self.xue_qiu_cookie:
             raise Exception('need login')
-        self.set_client_headers()
+        self.set_client_headers(cookie_env_key='xue_qiu_cookie', referer=referer, origin=origin)
 
     def get_portfolio_list(self, *, symbol=None, system=True):
         url = f"{self.base_url}/v5/stock/portfolio/list.json"

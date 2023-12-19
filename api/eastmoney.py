@@ -5,10 +5,8 @@ import random
 # from infra.cache.beaker import create_cache, EndMode
 from .base import BaseApier
 
-
 # def create_eastmoney_cache(*, expire=3600, end=EndMode.Day, is_before_clear=False):
 #     return create_cache(module="eastmoney", expire=expire, end=end, is_before_clear=is_before_clear)
-
 
 class ApiEastMoney(BaseApier):
     def __init__(self):
@@ -16,7 +14,7 @@ class ApiEastMoney(BaseApier):
         referer = 'http://fundf10.eastmoney.com/'
         self.referer = referer
         self.notice_api_base_url = 'https://np-anotice-stock.eastmoney.com/api'
-        self.set_client_headers(cookie_env_key='eastmoney_')
+        self.set_client_headers(cookie_env_key="eastmoney_cookie", referer=referer)
 
     def get_fund_net_worth(self, *, code, start_date, end_date, page_index, page_size):
         timestamp = int(time.time() * 1000)
@@ -104,10 +102,11 @@ class ApiEastMoney(BaseApier):
         timestamp = int(time.time() * 1000)
         callback = "jQuery112405829056173474523_" + str(timestamp)
 
-        url = "http://94.push2.eastmoney.com/api/qt/clist/get?cb={callback}&pn={page_index}&pz={page_size}&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&wbp2u=|0|0|0|web&fid=f3&fs=b:BK0511+f:\u002150&fields=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18,f20,f21,f23,f24,f25,f22,f11,f62,f128,f136,f115,f152,f45&_=1677925812996".format(
+        url = "http://94.push2.eastmoney.com/api/qt/clist/get?cb={callback}&pn={page_index}&pz={page_size}&po=1&np=1&ut=bd1d9ddb04089700cf9c27f6f7426281&fltt=2&invt=2&wbp2u=|0|0|0|web&fid=f3&fs=b:BK0511+f:\u002150&fields=f1,f2,f3,f4,f5,f6,f7,f8,f9,f10,f12,f13,f14,f15,f16,f17,f18,f20,f21,f23,f24,f25,f22,f11,f62,f128,f136,f115,f152,f45&_={timestamp}".format(
             callback=callback,
             page_index=page_index,
             page_size=page_size,
+            timestamp=timestamp,
         )
         res = self.session.get(url, headers=self.headers)
         try:
