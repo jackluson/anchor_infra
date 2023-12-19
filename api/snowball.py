@@ -13,6 +13,7 @@ import dateutil
 
 # from infra.cache.beaker import create_cache, EndMode
 from infra.utils.index import timeit_with_log, get_symbol_by_code
+from infra.logger.logger import logger
 from .base import BaseApier
 from ..utils.driver import get_request_header_key
 
@@ -20,7 +21,7 @@ from ..utils.driver import get_request_header_key
 # def create_snowball_cache(*args, **kwargs):
 #     return create_cache(module="snowball", *args, **kwargs)
 
-_global_xue_qiu_cookie = None
+_global_snowbal_cookie = None
 _global_api_snowbal = None
 
 class ApiSnowBall(BaseApier):
@@ -31,19 +32,21 @@ class ApiSnowBall(BaseApier):
         host = 'xueqiu.com'
         self.base_url = "https://stock.xueqiu.com"
         super().__init__()
-        global _global_xue_qiu_cookie
+        global _global_snowbal_cookie
+
         if need_login:
             logined_xue_qiu_cookie = os.getenv('xue_qiu_cookie')
             self.xue_qiu_cookie = logined_xue_qiu_cookie
-        elif not _global_xue_qiu_cookie:
+        elif not _global_snowbal_cookie:
             # 目前只能获取没有登录cookie
-            xue_qiu_cookie = get_request_header_key(
-                origin, host, 'Cookie')
-            self.xue_qiu_cookie = xue_qiu_cookie
-            _global_xue_qiu_cookie = xue_qiu_cookie
-            print("_global_xue_qiu_cookie", _global_xue_qiu_cookie)
+            cookie_str = self.get_cookie(origin)
+            # xue_qiu_cookie = get_request_header_key(
+            #     origin, host, 'Cookie')
+            self.xue_qiu_cookie = cookie_str
+            _global_snowbal_cookie = cookie_str
+            print("_global_snowbal_cookie", _global_snowbal_cookie)
         else:
-            self.xue_qiu_cookie = _global_xue_qiu_cookie
+            self.xue_qiu_cookie = _global_snowbal_cookie
         if need_login and not self.xue_qiu_cookie:
             raise Exception('need login')
         self.set_client_headers()
@@ -159,7 +162,21 @@ class ApiSnowBall(BaseApier):
         # self.logger.info('data:', data)
         return data
 
-
+    def get_stock_profile_info(self, code):
+        """ 获取公司简介信息
+        """
+        symbol = get_symbol_by_code(code)
+        url = "https://stock.xueqiu.com/v5/stock/f10/cn/company.json"
+        params = {
+            'symbol':  symbol.upper(),
+        }
+        data = self.get(url, params=params).get('data')
+        info = data.get('company')
+        if not info or not info['org_short_name_cn']:
+            line = f'该{symbol}--没有简介信息'
+            logger.warning(line)
+        return info
+        
 def create_single_api_snowball(*args, **kargs):
     global _global_api_snowbal
     if not _global_api_snowbal:
