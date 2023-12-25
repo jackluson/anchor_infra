@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import json
 import pytz
 import redis
-from infra.config.env import env_redis_db, env_redis_host, env_redis_port
+from infra.config.env import env_redis_db, env_redis_host, env_redis_password, env_redis_port
 
 
 import decimal
@@ -15,7 +15,8 @@ class DecimalEncoder(json.JSONEncoder):
 class BaseRedis(object):
     client:redis.Redis = None
     def __init__(self):
-        self.client = redis.StrictRedis(host=env_redis_host, port=env_redis_port, db=env_redis_db, decode_responses=True)
+        self.client = redis.StrictRedis(host=env_redis_host, port=env_redis_port, db=env_redis_db, password=env_redis_password, decode_responses=True)
+        print("env_redis_password", env_redis_password)
 
     def set(self, *arg, **kwargs):
         return self.client.set(*arg, **kwargs)
