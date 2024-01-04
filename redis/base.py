@@ -16,7 +16,6 @@ class BaseRedis(object):
     client:redis.Redis = None
     def __init__(self):
         self.client = redis.StrictRedis(host=env_redis_host, port=env_redis_port, db=env_redis_db, password=env_redis_password, decode_responses=True)
-        print("env_redis_password", env_redis_password)
 
     def set(self, *arg, **kwargs):
         return self.client.set(*arg, **kwargs)

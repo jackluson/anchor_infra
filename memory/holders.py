@@ -5,7 +5,7 @@ class HoldersMemory(object):
     redis: AnchorPlanRedis = None
     model: HoldersModel = None
     def __init__(self) -> None:
-        self.redis = get_anchor_plan_redis
+        self.redis = get_anchor_plan_redis()
         self.model = HoldersModel()
 
     def get_latest_certains_group_stocks(self, groups, is_holders_key):
