@@ -70,7 +70,7 @@ class Stock_PE_PB(ORM_Base, Model):
     UniqueConstraint(code, date, name='uix_1')
 
     def __repr__(self):
-        return f"notice(id={self.id!r}, code={self.name!r})"
+        return f"Stock_PE_PB(id={self.id!r}, code={self.name!r})"
 
     @staticmethod
     def bulk_save(data_list: list, ignore_key=[]):
